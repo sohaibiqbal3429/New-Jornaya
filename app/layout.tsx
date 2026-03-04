@@ -23,7 +23,23 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="theme-dark">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var t = localStorage.getItem('chs-theme');
+                  var c = document.documentElement.classList;
+                  c.remove('theme-dark','theme-light');
+                  c.add(t === 'theme-light' ? 'theme-light' : 'theme-dark');
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="font-sans antialiased">
         {children}
         <Analytics />

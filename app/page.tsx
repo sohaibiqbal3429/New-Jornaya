@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Phone, Headphones, Zap, MessageSquare, BarChart3, Share2, Mail, MapPin, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -63,23 +64,27 @@ export default function Home() {
               </a>
             </div>
 
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+            </div>
+
             <div className="hidden md:flex">
               <a href="#quote" className="inline-flex min-h-11 items-center rounded bg-orange-500 px-6 text-sm font-semibold text-white transition hover:bg-orange-600">
-                  Contact Us
+                Contact Us
               </a>
             </div>
 
             <button
               type="button"
-              className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-700 bg-slate-900/70 text-white transition hover:border-slate-600 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+              className="mobile-menu-toggle md:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-700 bg-slate-900/70 text-white transition hover:border-slate-600 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
               onClick={() => setMobileMenuOpen((prev) => !prev)}
             >
-              <span className="relative block h-5 w-5">
-                <span className={`absolute left-0 top-1 h-0.5 w-5 rounded bg-white transition-all duration-300 ${mobileMenuOpen ? 'top-2.5 rotate-45' : ''}`}></span>
-                <span className={`absolute left-0 top-2.5 h-0.5 w-5 rounded bg-white transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-                <span className={`absolute left-0 top-4 h-0.5 w-5 rounded bg-white transition-all duration-300 ${mobileMenuOpen ? 'top-2.5 -rotate-45' : ''}`}></span>
+              <span className="relative block h-6 w-6 overflow-visible">
+                <span className={`mobile-menu-line absolute left-0 top-1/2 h-0.5 w-5 -translate-y-1.5 rounded transition-all duration-300 ${mobileMenuOpen ? 'translate-y-0 rotate-45' : ''}`}></span>
+                <span className={`mobile-menu-line absolute left-0 top-1/2 h-0.5 w-5 rounded transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+                <span className={`mobile-menu-line absolute left-0 top-1/2 h-0.5 w-5 translate-y-1.5 rounded transition-all duration-300 ${mobileMenuOpen ? 'translate-y-0 -rotate-45' : ''}`}></span>
               </span>
             </button>
           </div>
