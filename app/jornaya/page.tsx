@@ -77,45 +77,92 @@ const captureCards = [
 
 export default function JornayaPage() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div id="top" className={`${inter.className} ${plusJakarta.variable} min-h-screen scroll-smooth bg-slate-950 text-white`}>
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-gradient-to-b from-orange-500/20 via-slate-950 to-transparent" />
 
-      <nav className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-[1500px] items-center justify-between px-5 sm:px-8 lg:px-12">
-          <a href="/" className="flex items-center gap-3 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
+      <nav className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85 pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
+          <div className="flex min-h-16 items-center justify-between gap-3">
+          <a href="/" className="flex min-w-0 items-center gap-3 rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
             <span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-orange-400 via-orange-500 to-amber-500 shadow-lg shadow-orange-500/30 ring-1 ring-orange-300/40">
               <span className="absolute inset-[3px] rounded-[10px] border border-white/25"></span>
               <span className="relative text-[11px] font-extrabold tracking-[0.08em] text-white">CHS</span>
             </span>
-            <span className="text-lg font-bold tracking-tight text-white">Chatters Health Solutions</span>
+            <span className="truncate text-lg font-bold tracking-tight text-white">Chatters Health Solutions</span>
           </a>
 
           <div className="hidden items-center gap-8 md:flex">
-            <a href="/#services" className="rounded text-sm text-gray-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Services</a>
-            <a href="/#why" className="rounded text-sm text-gray-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Why Choose Us</a>
-            <a href="/#process" className="rounded text-sm text-gray-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Process</a>
-            <a href="/#about" className="rounded text-sm text-gray-400 transition hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">About</a>
-            <a href="/jornaya" aria-current="page" className="rounded-full bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Jornaya</a>
+            <a href="/#services" className="rounded text-sm text-gray-400 transition hover:text-white min-h-11 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Services</a>
+            <a href="/#why" className="rounded text-sm text-gray-400 transition hover:text-white min-h-11 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Why Choose Us</a>
+            <a href="/#process" className="rounded text-sm text-gray-400 transition hover:text-white min-h-11 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Process</a>
+            <a href="/#about" className="rounded text-sm text-gray-400 transition hover:text-white min-h-11 inline-flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">About</a>
+            <a href="/jornaya" aria-current="page" className="rounded-full bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 min-h-11 inline-flex items-center">Jornaya</a>
           </div>
 
-          <a href="/#quote" className="rounded bg-orange-500 px-6 py-2 text-sm font-semibold text-white transition hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Get a Free Quote</a>
+          <div className="hidden md:flex">
+            <a href="/#quote" className="inline-flex min-h-11 items-center rounded bg-orange-500 px-6 text-sm font-semibold text-white transition hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">Get a Free Quote</a>
+          </div>
+
+          <button
+            type="button"
+            className="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-700 bg-slate-900/70 text-white transition hover:border-slate-600 hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500"
+            aria-label="Toggle navigation menu"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((prev) => !prev)}
+          >
+            <span className="relative block h-5 w-5">
+              <span className={`absolute left-0 top-1 h-0.5 w-5 rounded bg-white transition-all duration-300 ${mobileMenuOpen ? 'top-2.5 rotate-45' : ''}`}></span>
+              <span className={`absolute left-0 top-2.5 h-0.5 w-5 rounded bg-white transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+              <span className={`absolute left-0 top-4 h-0.5 w-5 rounded bg-white transition-all duration-300 ${mobileMenuOpen ? 'top-2.5 -rotate-45' : ''}`}></span>
+            </span>
+          </button>
+          </div>
+
+          <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 pb-4 opacity-100' : 'max-h-0 opacity-0'}`}>
+            <div className="mt-2 rounded-xl border border-slate-800 bg-slate-900/95 p-2 shadow-xl">
+              {[
+                ['/#services', 'Services'],
+                ['/#why', 'Why Choose Us'],
+                ['/#process', 'Process'],
+                ['/#about', 'About'],
+                ['/jornaya', 'Jornaya'],
+              ].map(([href, label]) => (
+                <a
+                  key={href}
+                  href={href}
+                  className="flex min-h-11 items-center rounded-lg px-3 text-sm font-medium text-gray-300 transition hover:bg-slate-800 hover:text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {label}
+                </a>
+              ))}
+              <a
+                href="/#quote"
+                className="mt-2 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-orange-500 px-4 text-sm font-semibold text-white transition hover:bg-orange-600"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Get a Free Quote
+              </a>
+            </div>
+          </div>
         </div>
       </nav>
 
-      <a href="/#quote" className="fixed right-150 top-1/2 z-40 hidden -translate-y-1/2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-xl transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 lg:inline-flex">
+      <a href="/#quote" className="fixed bottom-6 left-1/2 z-40 hidden -translate-x-1/2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white shadow-xl transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 lg:inline-flex">
         Get Quote
       </a>
 
       <main>
         <section className="py-16 md:py-24 lg:py-28">
-          <div className="mx-auto grid max-w-[1500px] gap-10 px-5 sm:px-8 lg:grid-cols-2 lg:items-center lg:px-12">
+          <div className="mx-auto grid max-w-[1500px] gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-12">
             <div>
               <p className="mb-4 inline-flex items-center rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700">
                 Compliance-First Lead Verification
               </p>
-              <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl [font-family:var(--font-plus-jakarta)]">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl leading-[1.05] font-extrabold tracking-tight text-white [font-family:var(--font-plus-jakarta)]">
                 Jornaya (LeadiD) Verified Lead Journey
               </h1>
               <p className="mt-5 max-w-2xl text-lg text-gray-400">
@@ -123,10 +170,10 @@ export default function JornayaPage() {
               </p>
 
               <div className="mt-8 flex flex-wrap gap-4">
-                <a href="#contact-cta" className="rounded bg-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-orange-200/60 transition hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
+                <a href="#contact-cta" className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center rounded bg-orange-500 px-6 text-sm font-semibold text-white shadow-lg shadow-orange-200/60 transition hover:bg-orange-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
                   Talk to an Integration Specialist
                 </a>
-                <a href="#journey" className="rounded border border-slate-700 bg-slate-800/40 px-6 py-3 text-sm font-semibold text-white transition hover:border-slate-600 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
+                <a href="#journey" className="inline-flex min-h-11 w-full sm:w-auto items-center justify-center rounded border border-slate-700 bg-slate-800/40 px-6 text-sm font-semibold text-white transition hover:border-slate-600 hover:bg-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2">
                   View Lead Journey
                 </a>
               </div>
@@ -174,7 +221,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="what-is" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
             <div className="grid gap-10 rounded-2xl border border-slate-700 bg-slate-800/40 p-8 shadow-md shadow-black/20 lg:grid-cols-2">
               <div>
                 <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">What is Jornaya (LeadiD)?</h2>
@@ -199,7 +246,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="journey" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
             <div className="mb-10 max-w-3xl">
               <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">Lead Journey</h2>
               <p className="mt-3 text-gray-400">
@@ -229,7 +276,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="capture" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
             <div className="mb-10 max-w-3xl">
               <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">What We Capture (Without Being Creepy)</h2>
               <p className="mt-3 text-gray-400">
@@ -251,7 +298,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="compliance" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
             <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
               <div>
                 <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">Compliance &amp; Trust</h2>
@@ -278,7 +325,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="integrations" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
             <div className="rounded-2xl border border-slate-700 bg-slate-800/40 p-8 shadow-md shadow-black/20">
               <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">Integrations</h2>
               <p className="mt-3 text-gray-400">Works with your existing stack through configurable delivery and routing workflows.</p>
@@ -294,7 +341,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="faq" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-12">
             <div className="mb-10 text-center">
               <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">Frequently Asked Questions</h2>
               <p className="mt-3 text-gray-400">Common buyer questions about verification, transparency, and setup.</p>
@@ -336,7 +383,7 @@ export default function JornayaPage() {
         </section>
 
         <section id="contact-cta" className="py-14 md:py-20 lg:py-24">
-          <div className="mx-auto max-w-[1300px] px-5 sm:px-8 lg:px-12">
+          <div className="mx-auto max-w-[1300px] px-4 sm:px-6 lg:px-12">
             <div className="rounded-2xl border border-slate-700 bg-gradient-to-r from-slate-900 to-slate-800/60 p-8 shadow-xl shadow-black/30 sm:p-10">
               <h2 className="text-3xl font-bold text-white [font-family:var(--font-plus-jakarta)]">Want Jornaya-ready leads that buyers trust?</h2>
               <p className="mt-3 text-gray-400">We build compliant funnels, capture verification, and deliver transparent leads.</p>
@@ -354,7 +401,7 @@ export default function JornayaPage() {
       </main>
 
       <footer className="border-t border-slate-800 bg-slate-950 py-16 text-slate-300">
-        <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+        <div className="mx-auto max-w-[1500px] px-4 sm:px-6 lg:px-12">
           <div className="mb-12 grid gap-8 md:grid-cols-5">
             <div>
               <div className="mb-4 flex items-center gap-3">
@@ -418,7 +465,7 @@ export default function JornayaPage() {
           </div>
 
           <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-8 md:flex-row">
-            <p className="text-sm text-slate-400">Ãƒâ€šÃ‚Â© 2026 Chatters Health Solutions. All rights reserved.</p>
+            <p className="text-sm text-slate-400">© 2026 Chatters Health Solutions. All rights reserved.</p>
             <a href="#top" className="rounded text-sm text-slate-400 transition hover:text-orange-400">Back to top</a>
           </div>
         </div>
@@ -426,6 +473,8 @@ export default function JornayaPage() {
     </div>
   );
 }
+
+
 
 
 

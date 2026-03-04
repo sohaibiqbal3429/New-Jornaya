@@ -65,7 +65,7 @@ export default function Home() {
 
             <div className="hidden md:flex">
               <a href="#quote" className="inline-flex min-h-11 items-center rounded bg-orange-500 px-6 text-sm font-semibold text-white transition hover:bg-orange-600">
-                Contact Us
+                  Contact Us
               </a>
             </div>
 
@@ -107,7 +107,7 @@ export default function Home() {
                 className="mt-2 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-orange-500 px-4 text-sm font-semibold text-white transition hover:bg-orange-600"
                 onClick={() => setMobileMenuOpen(false)}
               >
-              Contact Us
+                Contact Us
               </a>
             </div>
           </div>
@@ -158,7 +158,7 @@ export default function Home() {
 
       {/* Services Section */}
       <section id="services" className="py-16 md:py-24 lg:py-28">
-        <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Our Specialized <span className="text-orange-500">Services</span>
@@ -174,7 +174,7 @@ export default function Home() {
               { icon: Zap, title: 'Lead Generation', description: 'Data-driven outreach strategies designed to find and qualify the perfect prospects for your sales pipeline.' },
               { icon: Share2, title: 'BPO Solutions', description: 'Outsource complex business processes to our expert team and focus on your core strategy.' },
               { icon: MessageSquare, title: 'Digital Marketing', description: 'Comprehensive ad management across all major platforms to drive consistent traffic and conversions.' },
-              { icon: Headphones, title: 'Omnichannel Chat', description: 'Engage customers where they areÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â€šÂ¬Ã‚ÂSMS, WhatsApp, and Web Chat managed from a single dashboard.' },
+              { icon: Headphones, title: 'Omnichannel Chat', description: 'Engage customers where they are-SMS, WhatsApp, and Web Chat managed from a single dashboard.' },
               { icon: BarChart3, title: 'Data Analytics', description: 'In-depth reporting and performance insights that help you make smarter business decisions.' },
             ].map((service, i) => (
               <div key={i} className="bg-slate-800/50 rounded-lg p-8 border border-slate-700 hover:border-orange-500/50 transition group">
@@ -191,7 +191,7 @@ export default function Home() {
 
       {/* Why Choose Us */}
       <section id="why" className="py-16 md:py-24 lg:py-28 border-t border-slate-800">
-        <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid md:grid-cols-2 gap-16 items-start">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-3">
@@ -233,7 +233,7 @@ export default function Home() {
 
       {/* How It Works */}
       <section id="process" className="py-16 md:py-24 lg:py-28 border-t border-slate-800">
-        <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="text-center mb-16">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">How It Works</h2>
             <p className="text-gray-400">Three simple steps to scaling your operations</p>
@@ -266,7 +266,7 @@ export default function Home() {
 
       {/* About Section */}
       <section id="about" className="py-16 md:py-24 lg:py-28 border-t border-slate-800">
-        <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid md:grid-cols-2 gap-12 items-start">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -295,7 +295,7 @@ export default function Home() {
 
       {/* Contact/Quote Section */}
       <section id="quote" className="py-16 md:py-24 lg:py-28 border-t border-slate-800">
-        <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid md:grid-cols-2 gap-12">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
@@ -425,7 +425,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-800 bg-slate-950 py-16">
-        <div className="max-w-[1500px] mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
           <div className="grid md:grid-cols-5 gap-8 mb-12">
             <div>
               <div className="mb-4 flex items-center gap-3">
@@ -491,7 +491,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">Ãƒâ€šÃ‚Â© 2024 Chatters Health Solutions. All rights reserved.</p>
+            <p className="text-gray-400 text-sm">© 2024 Chatters Health Solutions. All rights reserved.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <button className="text-gray-400 hover:text-orange-500 transition text-sm">
                 <Share2 className="w-4 h-4" />
@@ -506,3 +506,5 @@ export default function Home() {
     </div>
   );
 }
+
+
