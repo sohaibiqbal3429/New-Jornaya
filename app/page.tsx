@@ -3,8 +3,13 @@
 import { useState } from 'react';
 import { Phone, Headphones, Zap, MessageSquare, BarChart3, Share2, Mail, MapPin, Facebook, Twitter, Linkedin } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ConsentCheckbox, TpmoDisclaimer } from '@/components/ConsentBlock';
 
 export default function Home() {
+  const consentTextVersion = 'v1.0';
+  const tpmoDisclaimerText =
+    'This website is operated by Chatters Health Solutions. By submitting this form you agree to be contacted by our team and affiliated partners regarding services you requested.';
+
   const [formData, setFormData] = useState({
     fullName: '',
     workEmail: '',
@@ -13,6 +18,8 @@ export default function Home() {
     message: '',
   });
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [consentError, setConsentError] = useState('');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -21,7 +28,21 @@ export default function Home() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    if (!consentChecked) {
+      setConsentError('Consent is required before submitting this form.');
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      consent_checked: true,
+      consent_timestamp: new Date().toISOString(),
+      consent_text_version: consentTextVersion,
+      page_url: window.location.href,
+      page_source: 'home quote form',
+    };
+
+    console.log('Form submitted:', payload);
     alert('Thank you! Our solutions architect will reach out within 2 business hours.');
     setFormData({
       fullName: '',
@@ -30,6 +51,8 @@ export default function Home() {
       serviceInterest: 'Lead Generation',
       message: '',
     });
+    setConsentChecked(false);
+    setConsentError('');
   };
 
   return (
@@ -416,9 +439,24 @@ export default function Home() {
                   />
                 </div>
 
+                <TpmoDisclaimer text={tpmoDisclaimerText} longText={tpmoDisclaimerText} />
+
+                <ConsentCheckbox
+                  id="home-consent"
+                  checked={consentChecked}
+                  onChange={(checked) => {
+                    setConsentChecked(checked);
+                    if (checked) setConsentError('');
+                  }}
+                  label="I agree to the TPMO disclaimer and consent to be contacted regarding my inquiry."
+                  error={consentError}
+                />
+
                 <button
                   type="submit"
-                  className="w-full px-6 py-3 bg-orange-500 text-white rounded font-semibold hover:bg-orange-600 transition"
+                  disabled={!consentChecked}
+                  aria-disabled={!consentChecked}
+                  className="w-full min-h-11 px-6 py-3 bg-orange-500 text-white rounded font-semibold hover:bg-orange-600 transition disabled:opacity-60 disabled:cursor-not-allowed"
                   >
                   Submit Quote Request
                 </button>
@@ -496,7 +534,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400 text-sm">© 2024 Chatters Health Solutions. All rights reserved.</p>
+            <p className="text-gray-400 text-sm">Â© 2024 Chatters Health Solutions. All rights reserved.</p>
             <div className="flex gap-4 mt-4 md:mt-0">
               <button className="text-gray-400 hover:text-orange-500 transition text-sm">
                 <Share2 className="w-4 h-4" />

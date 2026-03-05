@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { ConsentCheckbox, TpmoDisclaimer } from '@/components/ConsentBlock';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -77,8 +78,58 @@ const captureCards = [
 ];
 
 export default function JornayaPage() {
+  const consentTextVersion = 'v1.0';
+  const tpmoDisclaimerText =
+    'This website is operated by Chatters Health Solutions. By submitting this form you agree to be contacted by our team and affiliated partners regarding services you requested.';
+  const leadId = 'LD-***-***-7021';
+
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [jornayaFormData, setJornayaFormData] = useState({
+    fullName: '',
+    workEmail: '',
+    company: '',
+    message: '',
+  });
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [consentError, setConsentError] = useState('');
+
+  const handleJornayaInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setJornayaFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleJornayaSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!consentChecked) {
+      setConsentError('Consent is required before submitting this form.');
+      return;
+    }
+
+    const payload = {
+      ...jornayaFormData,
+      consent_given: true,
+      consent_checked: true,
+      consent_timestamp: new Date().toISOString(),
+      consent_text_version: consentTextVersion,
+      page_url: window.location.href,
+      page_source: 'jornaya page',
+      lead_id: leadId,
+      journey_identifier: 'jornaya-contact-cta',
+    };
+
+    console.log('Jornaya form submitted:', payload);
+    alert('Thanks! Our integration specialist will contact you shortly.');
+
+    setJornayaFormData({
+      fullName: '',
+      workEmail: '',
+      company: '',
+      message: '',
+    });
+    setConsentChecked(false);
+    setConsentError('');
+  };
 
   return (
     <div id="top" className={`${inter.className} ${plusJakarta.variable} min-h-screen scroll-smooth bg-slate-950 text-white`}>
@@ -400,6 +451,87 @@ export default function JornayaPage() {
                   Get a Free Quote
                 </a>
               </div>
+
+              <div className="mt-8 rounded-xl border border-slate-700 bg-slate-900/60 p-4 sm:p-6">
+                <p className="text-xs font-semibold uppercase tracking-wide text-orange-400">Consent Capture Required</p>
+                <p className="mt-2 text-sm text-gray-300">Consent is required before we can process your request.</p>
+
+                <form onSubmit={handleJornayaSubmit} className="mt-4 space-y-4">
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-white">Full Name</label>
+                      <input
+                        type="text"
+                        name="fullName"
+                        value={jornayaFormData.fullName}
+                        onChange={handleJornayaInputChange}
+                        required
+                        className="w-full rounded border border-slate-600 bg-slate-950 px-4 py-2 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
+                        placeholder="John Doe"
+                      />
+                    </div>
+                    <div>
+                      <label className="mb-2 block text-sm font-semibold text-white">Work Email</label>
+                      <input
+                        type="email"
+                        name="workEmail"
+                        value={jornayaFormData.workEmail}
+                        onChange={handleJornayaInputChange}
+                        required
+                        className="w-full rounded border border-slate-600 bg-slate-950 px-4 py-2 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
+                        placeholder="you@company.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-white">Company</label>
+                    <input
+                      type="text"
+                      name="company"
+                      value={jornayaFormData.company}
+                      onChange={handleJornayaInputChange}
+                      required
+                      className="w-full rounded border border-slate-600 bg-slate-950 px-4 py-2 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
+                      placeholder="Acme Inc."
+                    />
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm font-semibold text-white">Message</label>
+                    <textarea
+                      name="message"
+                      value={jornayaFormData.message}
+                      onChange={handleJornayaInputChange}
+                      rows={4}
+                      className="w-full resize-none rounded border border-slate-600 bg-slate-950 px-4 py-2 text-white placeholder-gray-500 focus:border-orange-500 focus:outline-none"
+                      placeholder="Tell us about your integration needs..."
+                    />
+                  </div>
+
+                  <TpmoDisclaimer text={tpmoDisclaimerText} longText={tpmoDisclaimerText} />
+
+                  <ConsentCheckbox
+                    id="jornaya-consent"
+                    checked={consentChecked}
+                    onChange={(checked) => {
+                      setConsentChecked(checked);
+                      if (checked) setConsentError('');
+                    }}
+                    label="I agree to the TPMO disclaimer and consent to be contacted regarding my inquiry."
+                    error={consentError}
+                  />
+
+                  <button
+                    type="submit"
+                    disabled={!consentChecked}
+                    aria-disabled={!consentChecked}
+                    className="w-full min-h-11 rounded bg-orange-500 px-6 py-3 text-sm font-semibold text-white transition hover:bg-orange-600 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Submit Integration Request
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
         </section>
@@ -470,7 +602,7 @@ export default function JornayaPage() {
           </div>
 
           <div className="flex flex-col items-center justify-between gap-3 border-t border-slate-800 pt-8 md:flex-row">
-            <p className="text-sm text-slate-400">© 2026 Chatters Health Solutions. All rights reserved.</p>
+            <p className="text-sm text-slate-400">Â© 2026 Chatters Health Solutions. All rights reserved.</p>
             <a href="#top" className="rounded text-sm text-slate-400 transition hover:text-orange-400">Back to top</a>
           </div>
         </div>
