@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Phone, Headphones, Zap, MessageSquare, BarChart3, Share2, Mail, MapPin, Facebook, Twitter, Linkedin } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ConsentCheckbox, TpmoDisclaimer } from '@/components/ConsentBlock';
+import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
 
 export default function Home() {
   const consentTextVersion = 'v1.0';
@@ -20,13 +21,24 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentError, setConsentError] = useState('');
+  const [submissionAlert, setSubmissionAlert] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    variant: 'success' | 'error';
+  }>({
+    open: false,
+    title: '',
+    message: '',
+    variant: 'success',
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consentChecked) {
       setConsentError('Consent is required before submitting this form.');
@@ -34,7 +46,12 @@ export default function Home() {
     }
 
     const payload = {
-      ...formData,
+      formType: 'home_quote',
+      fullName: formData.fullName,
+      email: formData.workEmail,
+      company: formData.company,
+      serviceInterest: formData.serviceInterest,
+      message: formData.message,
       consent_checked: true,
       consent_timestamp: new Date().toISOString(),
       consent_text_version: consentTextVersion,
@@ -42,21 +59,50 @@ export default function Home() {
       page_source: 'home quote form',
     };
 
-    console.log('Form submitted:', payload);
-    alert('Thank you! Our solutions architect will reach out within 2 business hours.');
-    setFormData({
-      fullName: '',
-      workEmail: '',
-      company: '',
-      serviceInterest: 'Lead Generation',
-      message: '',
-    });
-    setConsentChecked(false);
-    setConsentError('');
+    try {
+      const response = await fetch('/api/forms/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Failed to submit');
+
+      setSubmissionAlert({
+        open: true,
+        title: 'Request Received',
+        message: 'Thank you. Our solutions architect will reach out within 2 business hours.',
+        variant: 'success',
+      });
+      setFormData({
+        fullName: '',
+        workEmail: '',
+        company: '',
+        serviceInterest: 'Lead Generation',
+        message: '',
+      });
+      setConsentChecked(false);
+      setConsentError('');
+    } catch {
+      setSubmissionAlert({
+        open: true,
+        title: 'Submission Failed',
+        message: 'We could not submit your request right now. Please try again in a moment.',
+        variant: 'error',
+      });
+    }
   };
 
   return (
     <div className="min-h-screen bg-slate-950">
+      <PremiumSubmissionAlert
+        open={submissionAlert.open}
+        title={submissionAlert.title}
+        message={submissionAlert.message}
+        variant={submissionAlert.variant}
+        onClose={() => setSubmissionAlert((prev) => ({ ...prev, open: false }))}
+      />
+
       {/* Navbar */}
       <nav className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85 pt-[env(safe-area-inset-top)]">
         <div className="max-w-[1500px] mx-auto px-4 sm:px-6 lg:px-12">
@@ -549,5 +595,4 @@ export default function Home() {
     </div>
   );
 }
-
 

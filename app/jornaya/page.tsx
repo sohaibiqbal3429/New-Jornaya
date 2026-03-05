@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { ConsentCheckbox, TpmoDisclaimer } from '@/components/ConsentBlock';
+import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -93,13 +94,24 @@ export default function JornayaPage() {
   });
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentError, setConsentError] = useState('');
+  const [submissionAlert, setSubmissionAlert] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    variant: 'success' | 'error';
+  }>({
+    open: false,
+    title: '',
+    message: '',
+    variant: 'success',
+  });
 
   const handleJornayaInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setJornayaFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleJornayaSubmit = (e: React.FormEvent) => {
+  const handleJornayaSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consentChecked) {
       setConsentError('Consent is required before submitting this form.');
@@ -107,7 +119,11 @@ export default function JornayaPage() {
     }
 
     const payload = {
-      ...jornayaFormData,
+      formType: 'jornaya',
+      fullName: jornayaFormData.fullName,
+      email: jornayaFormData.workEmail,
+      company: jornayaFormData.company,
+      message: jornayaFormData.message,
       consent_given: true,
       consent_checked: true,
       consent_timestamp: new Date().toISOString(),
@@ -118,21 +134,50 @@ export default function JornayaPage() {
       journey_identifier: 'jornaya-contact-cta',
     };
 
-    console.log('Jornaya form submitted:', payload);
-    alert('Thanks! Our integration specialist will contact you shortly.');
+    try {
+      const response = await fetch('/api/forms/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-    setJornayaFormData({
-      fullName: '',
-      workEmail: '',
-      company: '',
-      message: '',
-    });
-    setConsentChecked(false);
-    setConsentError('');
+      if (!response.ok) throw new Error('Failed to submit');
+
+      setSubmissionAlert({
+        open: true,
+        title: 'Integration Request Received',
+        message: 'Thanks. Our integration specialist will contact you shortly.',
+        variant: 'success',
+      });
+
+      setJornayaFormData({
+        fullName: '',
+        workEmail: '',
+        company: '',
+        message: '',
+      });
+      setConsentChecked(false);
+      setConsentError('');
+    } catch {
+      setSubmissionAlert({
+        open: true,
+        title: 'Submission Failed',
+        message: 'We could not submit your request right now. Please try again shortly.',
+        variant: 'error',
+      });
+    }
   };
 
   return (
     <div id="top" className={`${inter.className} ${plusJakarta.variable} min-h-screen scroll-smooth bg-slate-950 text-white`}>
+      <PremiumSubmissionAlert
+        open={submissionAlert.open}
+        title={submissionAlert.title}
+        message={submissionAlert.message}
+        variant={submissionAlert.variant}
+        onClose={() => setSubmissionAlert((prev) => ({ ...prev, open: false }))}
+      />
+
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[28rem] bg-gradient-to-b from-orange-500/20 via-slate-950 to-transparent" />
 
       <nav className="sticky top-0 z-50 border-b border-slate-800 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85 pt-[env(safe-area-inset-top)]">
