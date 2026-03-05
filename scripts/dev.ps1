@@ -19,6 +19,24 @@ foreach ($proc in $running) {
   }
 }
 
+# If port 3000 is occupied by a stale Next.js node process, stop it so dev stays on 3000.
+try {
+  $port3000 = Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction Stop
+  $pids = $port3000 | Select-Object -ExpandProperty OwningProcess -Unique
+  foreach ($pid in $pids) {
+    $proc = Get-CimInstance Win32_Process -Filter "ProcessId = $pid" -ErrorAction SilentlyContinue
+    if ($proc -and $proc.Name -eq 'node.exe') {
+      try {
+        Stop-Process -Id $pid -Force -ErrorAction Stop
+      } catch {
+        Write-Host "Could not stop process on port 3000 ($pid): $($_.Exception.Message)"
+      }
+    }
+  }
+} catch {
+  # Port 3000 not in use.
+}
+
 Start-Sleep -Milliseconds 300
 
 $lockPath = Join-Path $projectRoot ".next\dev\lock"
@@ -33,7 +51,8 @@ if (Test-Path $lockPath) {
 Set-Location $projectRoot
 $nextCmd = Join-Path $projectRoot "node_modules\.bin\next.cmd"
 if (Test-Path $nextCmd) {
-  & $nextCmd "dev"
+  # Turbopack can intermittently fail on Windows with mapped-file cache writes.
+  & $nextCmd "dev" "--webpack"
 } else {
-  cmd /c "npx next dev"
+  cmd /c "npx next dev --webpack"
 }

@@ -143,13 +143,15 @@ html.theme-light .bg-slate-950\/85,
 html.theme-light .bg-slate-900,
 html.theme-light .bg-slate-900\/95,
 html.theme-light .bg-slate-900\/80,
-html.theme-light .bg-slate-900\/70 {
+html.theme-light .bg-slate-900\/70,
+html.theme-light .bg-slate-900\/60 {
   background-color: #ffffff !important;
 }
 
 html.theme-light .bg-slate-800,
 html.theme-light .bg-slate-800\/50,
-html.theme-light .bg-slate-800\/40 {
+html.theme-light .bg-slate-800\/40,
+html.theme-light .bg-slate-800\/30 {
   background-color: #f8fafc !important;
 }
 
@@ -211,4 +213,51 @@ html.theme-light .mobile-menu-toggle {
 
 html.theme-light .mobile-menu-line {
   background-color: #0f172a !important;
+}
+
+/* Light theme: improve form compliance block readability */
+html.theme-light .tpmo-card,
+html.theme-light .consent-card {
+  background-color: #e2e8f0 !important;
+  border-color: #94a3b8 !important;
+}
+
+html.theme-light .tpmo-text,
+html.theme-light .consent-label {
+  color: #1e293b !important;
+}
+
+html.theme-light .tpmo-link {
+  color: #c2410c !important;
+}
+
+html.theme-light .tpmo-modal {
+  background-color: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+html.theme-light .tpmo-modal-title,
+html.theme-light .tpmo-modal-text,
+html.theme-light .tpmo-modal-close {
+  color: #0f172a !important;
+}
+
+html.theme-light .tpmo-modal-close {
+  border-color: #94a3b8 !important;
+}
+
+html.theme-light .tpmo-modal-close:hover {
+  background-color: #e2e8f0 !important;
+}
+
+html.theme-light .consent-checkbox {
+  background-color: #ffffff !important;
+  border-color: #64748b !important;
+}
+
+.tpmo-preview {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

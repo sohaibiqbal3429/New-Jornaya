@@ -80,8 +80,17 @@ const captureCards = [
 
 export default function JornayaPage() {
   const consentTextVersion = 'v1.0';
-  const tpmoDisclaimerText =
-    'This website is operated by Chatters Health Solutions. By submitting this form you agree to be contacted by our team and affiliated partners regarding services you requested.';
+ const tpmoDisclaimerText = `Chatters Health Solutions is a privately owned website and is not associated with any state or Federal government, the Centers for Medicare & Medicaid Services (CMS), Healthcare.gov, or the Department of Health and Human Services. We are not an insurer or a licensed agency.
+
+We do not offer every plan available in your area. Plan availability depends on your resident zip code and participating carriers. For complete information about your options, please visit Medicare.gov, call 1-800-MEDICARE (TTY users: 1-877-486-2048) 24 hours a day, 7 days a week, or contact your local State Health Insurance Assistance Program (SHIP).
+
+Enrollment depends on the plan’s contract renewal with Medicare. Enrollment may be limited to certain times of the year unless you qualify for a Special Enrollment Period or are in your Medicare Initial Election Period.
+
+By completing the contact form above or calling the number listed above, you may be connected with a licensed insurance agent who can answer your questions and provide information about Medicare Advantage, Part D, or Medicare Supplement insurance plans.
+
+Neither Chatters Health Solutions nor its agents are connected with or endorsed by the U.S. government or the federal Medicare program.
+
+Medicare Supplement insurance is available to those age 65 and older enrolled in Medicare. The purpose of this communication is the solicitation of insurance. Contact will be made by an insurance agent/producer or insurance company.`;
   const leadId = 'LD-***-***-7021';
 
   const [openFaq, setOpenFaq] = useState<number | null>(0);
