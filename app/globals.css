@@ -261,3 +261,8 @@ html.theme-light .consent-checkbox {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.tpmo-modal-scroll {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}

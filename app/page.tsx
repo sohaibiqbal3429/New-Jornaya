@@ -392,8 +392,8 @@ Medicare Supplement insurance is available to those age 65 and older enrolled in
                   <Mail className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-white">Email</div>
-                    <a href="mailto:growth@chattershealthsolutions.com" className="text-gray-400 hover:text-orange-500 transition">
-                      growth@chattershealthsolutions.com
+                    <a href="mailto:admin@chattershealthsolutions.com" className="text-gray-400 hover:text-orange-500 transition">
+                      admin@chattershealthsolutions.com
                     </a>
                   </div>
                 </div>
@@ -401,8 +401,8 @@ Medicare Supplement insurance is available to those age 65 and older enrolled in
                   <Phone className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-white">Phone</div>
-                    <a href="tel:+18005551234" className="text-gray-400 hover:text-orange-500 transition">
-                      +1 (800) 555-MAXIMA
+                    <a href="tel:+12029848556" className="text-gray-400 hover:text-orange-500 transition">
+                      +1 (202) 984-8556
                     </a>
                   </div>
                 </div>
@@ -410,7 +410,15 @@ Medicare Supplement insurance is available to those age 65 and older enrolled in
                   <MapPin className="w-5 h-5 text-orange-500 flex-shrink-0 mt-0.5" />
                   <div>
                     <div className="font-semibold text-white">Office</div>
-                    <p className="text-gray-400">Manhattan Corporate HQ, NY</p>
+                    <p className="text-gray-400">
+                      1500 N Grant St
+                      <br />
+                      STE R
+                      <br />
+                      Denver, CO 80203
+                      <br />
+                      United States
+                    </p>
                   </div>
                 </div>
               </div>

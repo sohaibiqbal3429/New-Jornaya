@@ -41,9 +41,9 @@ export function TpmoDisclaimer({ text, longText }: TpmoDisclaimerProps) {
       </div>
 
       {open ? (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 p-4">
-          <div className="tpmo-modal w-full max-w-lg rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-2xl">
-            <div className="mb-4 flex items-center justify-between">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 p-2 sm:p-4">
+          <div className="tpmo-modal flex max-h-[90dvh] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-slate-700 bg-slate-900 shadow-2xl">
+            <div className="mb-2 flex items-center justify-between border-b border-slate-700 px-4 pb-3 pt-4 sm:px-6">
               <h3 className="tpmo-modal-title text-lg font-semibold text-white">TPMO Disclaimer</h3>
               <button
                 type="button"
@@ -54,7 +54,9 @@ export function TpmoDisclaimer({ text, longText }: TpmoDisclaimerProps) {
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <p className="tpmo-modal-text text-sm leading-relaxed text-gray-300">{fullText}</p>
+            <div className="tpmo-modal-scroll max-h-[65dvh] overflow-y-auto px-4 pb-4 pt-2 sm:px-6 sm:pb-6">
+              <p className="tpmo-modal-text text-sm leading-relaxed text-gray-300">{fullText}</p>
+            </div>
           </div>
         </div>
       ) : null}

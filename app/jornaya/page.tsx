@@ -606,11 +606,18 @@ Medicare Supplement insurance is available to those age 65 and older enrolled in
               <p className="mt-4 text-sm leading-6 text-slate-400">
                 Chatters Health Solutions
                 <br />
-                422 S Main Street
+                1500 N Grant St
                 <br />
-                Lombard, IL 60148
+                STE R
+                <br />
+                Denver, CO 80203
                 <br />
                 United States
+              </p>
+              <p className="mt-2 text-sm text-slate-400">
+                <a href="tel:+12029848556" className="transition hover:text-orange-400">
+                  +1 (202) 984-8556
+                </a>
               </p>
             </div>
 
