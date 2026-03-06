@@ -232,7 +232,10 @@ export default function Home() {
             <div className="mt-6 space-y-3 text-sm text-slate-700">
               <p className="flex items-center gap-2"><Phone className="h-4 w-4 text-blue-600" /> +1 (202) 984-8556</p>
               <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-blue-600" /> admin@chattershealthsolutions.com</p>
-              <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-blue-600" /> Denver, Colorado</p>
+              <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-blue-600" /> 1500 N Grant St
+STE R
+Denver, CO 80203
+United States</p>
             </div>
           </div>
 
