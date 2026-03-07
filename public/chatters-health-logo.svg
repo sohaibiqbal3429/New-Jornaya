@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220" role="img" aria-labelledby="title desc">
+  <title id="title">Chatters Health Solution logo</title>
+  <desc id="desc">Teal chat bubble with white medical cross and brand text.</desc>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#33b5b5"/>
+      <stop offset="1" stop-color="#1f9fa5"/>
+    </linearGradient>
+  </defs>
+  <g transform="translate(22,22)">
+    <path d="M88 0c48.6 0 88 31.3 88 70s-39.4 70-88 70c-8.7 0-17.1-1-25.1-2.9L26 170l11.9-42.7C14.8 114.8 0 94 0 70 0 31.3 39.4 0 88 0z" fill="url(#g)"/>
+    <rect x="67" y="33" width="42" height="74" rx="6" fill="#fff"/>
+    <rect x="51" y="49" width="74" height="42" rx="6" fill="#fff"/>
+  </g>
+  <text x="110" y="192" font-size="20" font-family="Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#2b5563">CHATTERS HEALTH</text>
+  <text x="110" y="210" font-size="16" font-family="Arial, Helvetica, sans-serif" font-weight="700" text-anchor="middle" fill="#2b5563">SOLUTION</text>
+</svg>
