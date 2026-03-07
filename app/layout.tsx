@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   description: 'Chatters Health Solution landing page for Medicare plan assistance.',
   generator: 'Chatters Health Solution',
   icons: {
-    icon: '/icon.svg',
-    shortcut: '/icon.svg',
-    apple: '/icon.svg',
+    icon: '/chatters-health-logo.svg',
+    shortcut: '/chatters-health-logo.svg',
+    apple: '/chatters-health-logo.svg',
   },
 }
 
