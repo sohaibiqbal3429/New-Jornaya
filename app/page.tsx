@@ -106,16 +106,16 @@ export default function Home() {
 
       <nav className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <a href="/" className="flex items-center gap-2 text-slate-800" aria-label="Chatters Health Solution home">
+          <a href="/" className="flex items-center gap-2 text-slate-800" aria-label="Chatters Health Solutions home">
             <Image
               src="/chatters-health-logo.svg"
-              alt="Chatters Health Solution logo"
+              alt="Chatters Health Solutions logo"
               width={40}
               height={40}
               className="h-10 w-10"
               priority
             />
-            <span className="text-lg font-semibold">Chatters Health Solution</span>
+            <span className="text-lg font-semibold">Chatters Health Solutions</span>
           </a>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -207,7 +207,7 @@ export default function Home() {
 
       <section id="about" className="border-y border-slate-200 bg-white py-16 md:py-20">
         <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">About Chatters Health Solution</h2>
+          <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">About Chatters Health Solutions</h2>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
               <h3 className="font-semibold text-slate-900">Who we help</h3>
@@ -309,7 +309,7 @@ United States</p>
       <footer className="border-t border-slate-200 bg-white py-10">
         <div className="mx-auto max-w-6xl px-4 text-sm text-slate-600 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row">
-            <p>© 2026 Chatters Health Solution. All rights reserved.</p>
+            <p>© 2026 Chatters Health Solutions. All rights reserved.</p>
             <div className="flex gap-4">
               <a href="#" className="hover:text-slate-900">Privacy Policy</a>
               <a href="#" className="hover:text-slate-900">Terms & Conditions</a>
