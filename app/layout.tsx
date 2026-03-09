@@ -7,9 +7,9 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Chatters Health Solution',
-  description: 'Chatters Health Solution landing page for Medicare plan assistance.',
-  generator: 'Chatters Health Solution',
+  title: 'Chatters Health Solutions',
+  description: 'Chatters Health Solutions landing page for Medicare plan assistance.',
+  generator: 'Chatters Health Solutions',
   icons: {
     icon: '/chatters-health-logo.svg',
     shortcut: '/chatters-health-logo.svg',
