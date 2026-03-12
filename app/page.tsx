@@ -6,7 +6,37 @@ import Image from 'next/image';
 import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
 
 const fullConsentText = `Chatters Health Solutions is a privately owned website and is not associated with any state or Federal government, the Centers for Medicare & Medicaid Services (CMS), Healthcare.gov, or the Department of Health and Human Services. We are not an insurer or a licensed agency. We do not offer every plan available in your area. Plan availability depends on your resident zip code and participating carriers. For complete information about your options, please visit Medicare.gov, call 1-800-MEDICARE (TTY users: 1-877-486-2048) 24 hours a day, 7 days a week, or contact your local State Health Insurance Assistance Program (SHIP). Enrollment depends on the plan’s contract renewal with Medicare. Enrollment may be limited to certain times of the year unless you qualify for a Special Enrollment Period or are in your Medicare Initial Election Period. By completing the contact form above or calling the number listed above, you may be connected with a licensed insurance agent who can answer your questions and provide information about Medicare Advantage, Part D, or Medicare Supplement insurance plans. Neither Chatters Health Solutions nor its agents are connected with or endorsed by the U.S. government or the federal Medicare program. Medicare Supplement insurance is available to those age 65 and older enrolled in Medicare. The purpose of this communication is the solicitation of insurance. Contact will be made by an insurance agent/producer or insurance company.`;
-
+function ContactDetails({
+  className = '',
+  iconClassName = 'h-5 w-5',
+  textClassName = 'text-sm text-slate-700',
+}: {
+  className?: string;
+  iconClassName?: string;
+  textClassName?: string;
+}) {
+  return (
+    <div className={className}>
+      <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
+        Chatters Health Solutions LLC.
+      </p>
+      <div className={`space-y-3 ${textClassName}`}>
+        <p className="flex items-center gap-3">
+          <Phone className={`${iconClassName} shrink-0 text-blue-600`} />
+          <span>+1 (202) 984-8556</span>
+        </p>
+        <p className="flex items-center gap-3">
+          <Mail className={`${iconClassName} shrink-0 text-blue-600`} />
+          <span>admin@chattershealthsolutions.com</span>
+        </p>
+        <p className="flex items-start gap-3">
+          <MapPin className={`${iconClassName} mt-0.5 shrink-0 text-blue-600`} />
+          <span>1500 N Grant St STE R Denver, CO 80203 United States</span>
+        </p>
+      </div>
+    </div>
+  );
+}
 export default function Home() {
   const consentTextVersion = 'v2.0';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -238,14 +268,11 @@ export default function Home() {
             <p className="mt-3 text-slate-600">
               Complete the form and we will connect you with a licensed insurance agent for Medicare help.
             </p>
-            <div className="mt-6 space-y-3 text-sm text-slate-700">
-              <p className="flex items-center gap-2"><Phone className="h-4 w-4 text-blue-600" /> +1 (202) 984-8556</p>
-              <p className="flex items-center gap-2"><Mail className="h-4 w-4 text-blue-600" /> admin@chattershealthsolutions.com</p>
-              <p className="flex items-center gap-2"><MapPin className="h-4 w-4 text-blue-600" /> 1500 N Grant St
-STE R
-Denver, CO 80203
-United States</p>
-            </div>
+            <ContactDetails
+              className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60"
+              iconClassName="h-4 w-4"
+              textClassName="text-sm text-slate-700"
+            />
           </div>
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
@@ -379,22 +406,11 @@ United States</p>
            
           </div>
 
-          <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
-            <div className="space-y-3 text-base text-slate-700">
-              <p className="flex items-center gap-3">
-                <Phone className="h-5 w-5 text-blue-600" />
-                <span>+1 (202) 984-8556</span>
-              </p>
-              <p className="flex items-center gap-3">
-                <Mail className="h-5 w-5 text-blue-600" />
-                <span>admin@chattershealthsolutions.com</span>
-              </p>
-              <p className="flex items-start gap-3">
-                <MapPin className="mt-0.5 h-5 w-5 text-blue-600" />
-                <span>1500 N Grant St STE R Denver, CO 80203 United States</span>
-              </p>
-            </div>
-          </div>
+          <ContactDetails
+            className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5"
+            iconClassName="h-5 w-5"
+            textClassName="text-base text-slate-700"
+          />
 
           <p className="mt-4 text-xs leading-relaxed text-slate-500">
             This is a privately owned, non-government website. We are not affiliated with or endorsed by Medicare or any government agency.
@@ -405,3 +421,4 @@ United States</p>
     </div>
   );
 }
+
