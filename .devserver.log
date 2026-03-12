@@ -1,0 +1,36 @@
+
+> my-project@0.1.0 dev
+> powershell -ExecutionPolicy Bypass -File scripts/dev.ps1
+
+⚠ Port 3000 is in use by process 10800, using available port 3007 instead.
+▲ Next.js 16.1.6 (webpack)
+- Local:         http://localhost:3007
+- Network:       http://192.168.18.12:3007
+- Environments: .env.local
+
+✓ Starting...
+✓ Ready in 5.6s
+○ Compiling /privacy-policy ...
+ GET / 200 in 16.2s (compile: 15.6s, render: 587ms)
+ GET / 200 in 16.3s (compile: 15.7s, render: 591ms)
+ GET /privacy-policy 200 in 16.3s (compile: 15.7s, render: 605ms)
+ GET / 200 in 122ms (compile: 14ms, render: 107ms)
+ GET /privacy-policy 200 in 179ms (compile: 13ms, render: 165ms)
+⨯ ./app/page.tsx
+Error:   x Expected '</', got 'jsx text'
+     ,-[D:\New Jornaya\app\page.tsx:425:1]
+ 422 |                 Availability of plans varies by ZIP code and carrier participation.
+ 423 |               </p>
+ 424 |             </div>
+ 425 | ,->       </footer>
+ 426 | `->     </div>
+ 427 |       );
+ 428 |     }
+ 428 |     
+     `----
+
+Caused by:
+    Syntax Error
+
+Import trace for requested module:
+./app/page.tsx

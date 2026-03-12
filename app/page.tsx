@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { CheckCircle2, Phone, MapPin, Mail } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
 
 const fullConsentText = `Chatters Health Solutions is a privately owned website and is not associated with any state or Federal government, the Centers for Medicare & Medicaid Services (CMS), Healthcare.gov, or the Department of Health and Human Services. We are not an insurer or a licensed agency. We do not offer every plan available in your area. Plan availability depends on your resident zip code and participating carriers. For complete information about your options, please visit Medicare.gov, call 1-800-MEDICARE (TTY users: 1-877-486-2048) 24 hours a day, 7 days a week, or contact your local State Health Insurance Assistance Program (SHIP). Enrollment depends on the plan’s contract renewal with Medicare. Enrollment may be limited to certain times of the year unless you qualify for a Special Enrollment Period or are in your Medicare Initial Election Period. By completing the contact form above or calling the number listed above, you may be connected with a licensed insurance agent who can answer your questions and provide information about Medicare Advantage, Part D, or Medicare Supplement insurance plans. Neither Chatters Health Solutions nor its agents are connected with or endorsed by the U.S. government or the federal Medicare program. Medicare Supplement insurance is available to those age 65 and older enrolled in Medicare. The purpose of this communication is the solicitation of insurance. Contact will be made by an insurance agent/producer or insurance company.`;
@@ -336,7 +337,7 @@ export default function Home() {
       <section id="policy" className="border-t border-slate-200 bg-white py-16 md:py-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">
-            <strong>Chatters Health Solutions</strong> – Disclaimer &amp; Compliance Policy
+            <strong>Chatters Health Solutions</strong> – Disclaimer 
           </h2>
 
           <div className="mt-8 space-y-6 text-base leading-relaxed text-slate-700">
@@ -398,12 +399,23 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <div className="flex justify-center items-center mt-6">
+  <Link
+    href="/privacy-policy"
+    className="px-8 mb-5 py-2 rounded-full bg-blue-600 text-white font-medium shadow-md transition-all duration-300 hover:bg-blue-700 hover:shadow-lg hover:scale-105 text-sm sm:text-base"
+  >
+    Privacy Policy
+  </Link>
+</div>
 
       <footer className="border-t border-slate-200 bg-white py-10">
         <div className="mx-auto max-w-6xl px-4 text-sm text-slate-600 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-            <p>© 2026 Chatters Health Solutions. All rights reserved.</p>
-           
+            <p>&copy; 2026 Chatters Health Solutions. All rights reserved.</p>
+            <div className="flex items-center gap-3 text-sm font-medium text-slate-500">
+             
+              
+            </div>
           </div>
 
           <ContactDetails
