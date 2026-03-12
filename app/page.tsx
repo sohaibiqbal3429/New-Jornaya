@@ -334,71 +334,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="policy" className="border-t border-slate-200 bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">
-            <strong>Chatters Health Solutions</strong> – Disclaimer 
-          </h2>
-
-          <div className="mt-8 space-y-6 text-base leading-relaxed text-slate-700">
-            <p>
-              All trademarks and copyrights are the property of their respective holders. <strong>Chatters Health Solutions</strong> is a privately
-              owned website and is not associated with any state or federal government agency, including the Centers for Medicare &amp; Medicaid
-              Services (CMS), Healthcare.gov, or the U.S. Department of Health and Human Services (HHS). <strong>Chatters Health Solutions</strong>{' '}
-              is not an insurance company and is not a government-affiliated organization.
-            </p>
-
-            <p>
-              We do not offer every plan available in your area. Currently, we represent multiple organizations that offer Medicare-related
-              products in various regions. For a complete list of available plans in your area, please visit Medicare.gov, call
-              1-800-MEDICARE, or contact your local State Health Insurance Assistance Program (SHIP) for unbiased information about all
-              available options.
-            </p>
-
-            <p>
-              Participating sales agencies represent Medicare Advantage (HMO, PPO, and PFFS) organizations and Prescription Drug Plans (PDP)
-              that are contracted with Medicare. Enrollment in these plans depends on the plan’s contract renewal with Medicare. Enrollment in
-              a plan may be limited to certain times of the year unless you qualify for a Special Enrollment Period (SEP) or are within your
-              Medicare Initial Enrollment Period (IEP). Any information provided by <strong>Chatters Health Solutions</strong> is limited to the
-              plans that we represent in your area.
-            </p>
-
-            <p>For complete plan information and options, please contact:</p>
-
-            <div className="space-y-1">
-              <p>Medicare.gov</p>
-              <p>1-800-MEDICARE (1-800-633-4227)</p>
-              <p>TTY users: 1-877-486-2048</p>
-              <p>Available 24 hours a day / 7 days a week</p>
-            </div>
-
-            <p>
-              <strong>Chatters Health Solutions</strong> assumes no responsibility and accepts no liability for any content submitted or posted by
-              consumers or third parties on this website.
-            </p>
-
-            <p>
-              By completing the contact form on this website or calling the phone number listed, you may be connected with a licensed
-              insurance agent or producer who can provide information about Medicare Advantage, Medicare Part D, or Medicare Supplement
-              insurance plans. <strong>Chatters Health Solutions</strong> and its representatives are not affiliated with or endorsed by the U.S.
-              Government or the federal Medicare program. Availability of carriers, plans, and products depends on your state and ZIP code.
-            </p>
-
-            <p>
-              Medicare Supplement insurance plans are not connected with or endorsed by the U.S. Government or the federal Medicare program.
-              The purpose of this communication is the solicitation of insurance. Contact may be made by a licensed insurance agent, producer,
-              or insurance company.
-            </p>
-
-            <p>
-              Medicare Supplement insurance is generally available to individuals age 65 or older who are enrolled in Medicare Parts A and B,
-              and in some states to individuals under age 65 who qualify for Medicare due to disability or End-Stage Renal Disease (ESRD).
-            </p>
-
-            <p>Carrier availability and plan benefits vary by state, county, and ZIP code.</p>
-          </div>
-        </div>
-      </section>
+    
       <div className="flex justify-center items-center mt-6">
   <Link
     href="/privacy-policy"
