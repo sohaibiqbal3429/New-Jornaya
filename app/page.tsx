@@ -376,10 +376,7 @@ United States</p>
         <div className="mx-auto max-w-6xl px-4 text-sm text-slate-600 sm:px-6 lg:px-8">
           <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
             <p>© 2026 Chatters Health Solutions. All rights reserved.</p>
-            <div className="flex gap-4">
-              <a href="#" className="hover:text-slate-900">Privacy Policy</a>
-              <a href="#" className="hover:text-slate-900">Terms & Conditions</a>
-            </div>
+           
           </div>
 
           <div className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5">
