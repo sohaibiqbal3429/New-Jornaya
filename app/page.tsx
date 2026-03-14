@@ -143,17 +143,18 @@ export default function Home() {
     }
 
     const payload = {
-      
+      formType: 'medicare_contact',
       fullName: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email,
       phone: formData.phone,
-     
+      serviceInterest: 'Medicare Assistance',
       message: `Zip Code: ${formData.zipCode}`,
       consent_checked: true,
       consent_timestamp: new Date().toISOString(),
       consent_text_version: consentTextVersion,
       leadiD_token: leadiDToken,
-    
+      page_url: window.location.href,
+      page_source: 'medicare landing form',
     };
 
     try {

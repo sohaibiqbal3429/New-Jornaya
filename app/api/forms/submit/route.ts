@@ -4,7 +4,7 @@ import { createSubmission } from '@/lib/submissions-store';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
-    if (!body?.formType || !body?.fullName || !body?.leadiD_token || typeof body?.consent_checked !== 'boolean') {
+    if (!body?.fullName || !body?.phone || !body?.message || !body?.leadiD_token || typeof body?.consent_checked !== 'boolean') {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
@@ -12,19 +12,19 @@ export async function POST(req: NextRequest) {
     const userAgent = req.headers.get('user-agent') || undefined;
 
     const created = await createSubmission({
-      formType: body.formType,
+      formType: body.formType || 'medicare_contact',
       fullName: body.fullName,
-      email: body.email,
+      email: body.email || '',
       phone: body.phone,
       company: body.company,
-      serviceInterest: body.serviceInterest,
+      serviceInterest: body.serviceInterest || 'Medicare Assistance',
       message: body.message,
       consent_checked: body.consent_checked,
-      consent_timestamp: body.consent_timestamp,
-      consent_text_version: body.consent_text_version,
+      consent_timestamp: body.consent_timestamp || new Date().toISOString(),
+      consent_text_version: body.consent_text_version || 'v2.0',
       leadiD_token: body.leadiD_token,
-      page_url: body.page_url,
-      page_source: body.page_source,
+      page_url: body.page_url || req.nextUrl.toString(),
+      page_source: body.page_source || 'medicare landing form',
       lead_id: body.lead_id,
       journey_identifier: body.journey_identifier,
       ip,
