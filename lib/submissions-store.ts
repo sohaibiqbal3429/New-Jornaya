@@ -15,6 +15,7 @@ export type Submission = {
   consent_checked: boolean;
   consent_timestamp: string;
   consent_text_version: string;
+  leadiD_token?: string;
   page_url: string;
   page_source: string;
   lead_id?: string;
@@ -31,7 +32,9 @@ type SubmissionStored = Omit<Submission, 'id' | 'createdAt'> & {
 
 type SubmissionDocument = WithId<SubmissionStored>;
 
-type CreateSubmissionInput = Omit<Submission, 'id' | 'createdAt' | 'status'>;
+type CreateSubmissionInput = Omit<Submission, 'id' | 'createdAt' | 'status'> & {
+  leadiD_token: string;
+};
 
 function toSubmission(doc: SubmissionDocument): Submission {
   return {
@@ -46,6 +49,7 @@ function toSubmission(doc: SubmissionDocument): Submission {
     consent_checked: doc.consent_checked,
     consent_timestamp: doc.consent_timestamp,
     consent_text_version: doc.consent_text_version,
+    leadiD_token: doc.leadiD_token,
     page_url: doc.page_url,
     page_source: doc.page_source,
     lead_id: doc.lead_id,

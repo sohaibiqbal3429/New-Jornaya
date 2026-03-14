@@ -15,6 +15,7 @@ type Submission = {
   message?: string;
   page_url: string;
   consent_timestamp: string;
+  leadiD_token?: string;
   lead_id?: string;
   journey_identifier?: string;
 };
@@ -79,7 +80,7 @@ export default function AdminDashboardClient() {
   const pages = Math.max(1, Math.ceil(total / 20));
 
   const exportCsv = () => {
-    const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status'];
+    const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status', 'LeadiD Token'];
     const rows = items.map((s) => [
       s.createdAt,
       s.formType,
@@ -89,6 +90,7 @@ export default function AdminDashboardClient() {
       s.serviceInterest ?? '',
       String(s.consent_checked),
       s.status,
+      s.leadiD_token ?? '',
     ]);
     const csv = [header, ...rows]
       .map((r) => r.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(','))

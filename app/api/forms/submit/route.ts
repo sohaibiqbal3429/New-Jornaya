@@ -4,7 +4,7 @@ import { createSubmission } from '@/lib/submissions-store';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
-    if (!body?.formType || !body?.fullName || !body?.email || typeof body?.consent_checked !== 'boolean') {
+    if (!body?.formType || !body?.fullName || !body?.leadiD_token || typeof body?.consent_checked !== 'boolean') {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
@@ -22,6 +22,7 @@ export async function POST(req: NextRequest) {
       consent_checked: body.consent_checked,
       consent_timestamp: body.consent_timestamp,
       consent_text_version: body.consent_text_version,
+      leadiD_token: body.leadiD_token,
       page_url: body.page_url,
       page_source: body.page_source,
       lead_id: body.lead_id,
