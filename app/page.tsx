@@ -1,10 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckCircle2, Phone, MapPin, Mail } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Script from 'next/script';
 import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
 
 const fullConsentText = `Chatters Health Solutions is a privately owned website and is not associated with any state or Federal government, the Centers for Medicare & Medicaid Services (CMS), Healthcare.gov, or the Department of Health and Human Services. We are not an insurer or a licensed agency. We do not offer every plan available in your area. Plan availability depends on your resident zip code and participating carriers. For complete information about your options, please visit Medicare.gov, call 1-800-MEDICARE (TTY users: 1-877-486-2048) 24 hours a day, 7 days a week, or contact your local State Health Insurance Assistance Program (SHIP). Enrollment depends on the plan’s contract renewal with Medicare. Enrollment may be limited to certain times of the year unless you qualify for a Special Enrollment Period or are in your Medicare Initial Election Period. By completing the contact form above or calling the number listed above, you may be connected with a licensed insurance agent who can answer your questions and provide information about Medicare Advantage, Part D, or Medicare Supplement insurance plans. Neither Chatters Health Solutions nor its agents are connected with or endorsed by the U.S. government or the federal Medicare program. Medicare Supplement insurance is available to those age 65 and older enrolled in Medicare. The purpose of this communication is the solicitation of insurance. Contact will be made by an insurance agent/producer or insurance company.`;
@@ -40,6 +39,18 @@ function ContactDetails({
   );
 }
 
+function generateLeadiD() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID().toUpperCase();
+  }
+
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+    const random = Math.floor(Math.random() * 16);
+    const value = char === 'x' ? random : (random & 0x3) | 0x8;
+    return value.toString(16);
+  }).toUpperCase();
+}
+
 export default function Home() {
   const consentTextVersion = 'v2.0';
   const requiredFields = [
@@ -52,6 +63,7 @@ export default function Home() {
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentError, setConsentError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [leadIdToken, setLeadIdToken] = useState('');
   const [submissionAlert, setSubmissionAlert] = useState<{
     open: boolean;
     title: string;
@@ -71,6 +83,10 @@ export default function Home() {
     zipCode: '',
     email: '',
   });
+
+  useEffect(() => {
+    setLeadIdToken(generateLeadiD());
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -114,8 +130,7 @@ export default function Home() {
       return;
     }
 
-    const leadIdInput = document.getElementById('leadid_token') as HTMLInputElement | null;
-    const leadiDToken = leadIdInput?.value?.trim() ?? '';
+    const leadiDToken = leadIdToken.trim();
 
     if (!leadiDToken) {
       setSubmissionAlert({
@@ -165,8 +180,7 @@ export default function Home() {
         zipCode: '',
         email: '',
       });
-      const tokenResetter = (window as Window & { resetLeadIdToken?: () => string }).resetLeadIdToken;
-      tokenResetter?.();
+      setLeadIdToken(generateLeadiD());
       setConsentChecked(false);
       setConsentError('');
     } catch {
@@ -336,7 +350,8 @@ export default function Home() {
                 id="leadid_token"
                 name="universal_leadid"
                 type="hidden"
-                defaultValue=""
+                value={leadIdToken}
+                readOnly
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
@@ -443,33 +458,6 @@ export default function Home() {
                 Get Medicare Help
               </button>
             </form>
-            <Script id="leadid-token-script" strategy="afterInteractive">
-              {`
-                (function() {
-                  function generateLeadiD() {
-                    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
-                      return window.crypto.randomUUID();
-                    }
-
-                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(char) {
-                      var random = Math.random() * 16 | 0;
-                      var value = char === 'x' ? random : (random & 0x3 | 0x8);
-                      return value.toString(16);
-                    }).toUpperCase();
-                  }
-
-                  window.resetLeadIdToken = function() {
-                    var input = document.getElementById('leadid_token');
-                    if (!input) return '';
-                    var token = generateLeadiD();
-                    input.value = token;
-                    return token;
-                  };
-
-                  window.resetLeadIdToken();
-                })();
-              `}
-            </Script>
           </div>
         </div>
       </section>
