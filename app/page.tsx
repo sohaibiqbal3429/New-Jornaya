@@ -40,9 +40,16 @@ function ContactDetails({
 }
 export default function Home() {
   const consentTextVersion = 'v2.0';
+  const requiredFields = [
+    { name: 'firstName', label: 'First Name' },
+    { name: 'lastName', label: 'Last Name' },
+    { name: 'phone', label: 'Phone Number' },
+    { name: 'zipCode', label: 'Zip Code' },
+  ] as const;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentError, setConsentError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submissionAlert, setSubmissionAlert] = useState<{
     open: boolean;
     title: string;
@@ -66,10 +73,39 @@ export default function Home() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setFieldErrors((prev) => {
+      if (!prev[name]) return prev;
+
+      const next = { ...prev };
+      if (value.trim()) {
+        delete next[name];
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const nextFieldErrors = requiredFields.reduce<Record<string, string>>((errors, field) => {
+      if (!formData[field.name].trim()) {
+        errors[field.name] = `${field.label} is required.`;
+      }
+      return errors;
+    }, {});
+
+    if (Object.keys(nextFieldErrors).length > 0) {
+      setFieldErrors(nextFieldErrors);
+      setSubmissionAlert({
+        open: true,
+        title: 'Complete Required Fields',
+        message: 'Please fill in First Name, Last Name, Phone Number, and Zip Code before submitting the form.',
+        variant: 'error',
+      });
+      return;
+    }
+
+    setFieldErrors({});
 
     if (!consentChecked) {
       setConsentError('Consent is required before submitting this form.');
@@ -280,29 +316,83 @@ export default function Home() {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-slate-800">First Name</label>
-                  <input id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} required className="w-full rounded-md border border-slate-300 px-3 py-2" />
+                  <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-slate-800">First Name  *</label>
+                  <input
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    autoComplete="given-name"
+                    aria-invalid={fieldErrors.firstName ? 'true' : 'false'}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
+                      fieldErrors.firstName
+                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
+                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
+                    }`}
+                  />
+                  {fieldErrors.firstName ? <p className="mt-1 text-sm text-red-600">{fieldErrors.firstName}</p> : null}
                 </div>
                 <div>
-                  <label htmlFor="lastName" className="mb-1 block text-sm font-medium text-slate-800">Last Name</label>
-                  <input id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} required className="w-full rounded-md border border-slate-300 px-3 py-2" />
+                  <label htmlFor="lastName" className="mb-1 block text-sm font-medium text-slate-800">Last Name  *</label>
+                  <input
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    autoComplete="family-name"
+                    aria-invalid={fieldErrors.lastName ? 'true' : 'false'}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
+                      fieldErrors.lastName
+                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
+                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
+                    }`}
+                  />
+                  {fieldErrors.lastName ? <p className="mt-1 text-sm text-red-600">{fieldErrors.lastName}</p> : null}
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="phone" className="mb-1 block text-sm font-medium text-slate-800">Phone Number</label>
-                  <input id="phone" name="phone" value={formData.phone} onChange={handleInputChange} required className="w-full rounded-md border border-slate-300 px-3 py-2" />
+                  <label htmlFor="phone" className="mb-1 block text-sm font-medium text-slate-800">Phone Number  *</label>
+                  <input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    autoComplete="tel"
+                    aria-invalid={fieldErrors.phone ? 'true' : 'false'}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
+                      fieldErrors.phone
+                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
+                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
+                    }`}
+                  />
+                  {fieldErrors.phone ? <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p> : null}
                 </div>
                 <div>
-                  <label htmlFor="zipCode" className="mb-1 block text-sm font-medium text-slate-800">Zip Code</label>
-                  <input id="zipCode" name="zipCode" value={formData.zipCode} onChange={handleInputChange} required className="w-full rounded-md border border-slate-300 px-3 py-2" />
+                  <label htmlFor="zipCode" className="mb-1 block text-sm font-medium text-slate-800">Zip Code  *</label>
+                  <input
+                    id="zipCode"
+                    name="zipCode"
+                    inputMode="numeric"
+                    autoComplete="postal-code"
+                    value={formData.zipCode}
+                    onChange={handleInputChange}
+                    aria-invalid={fieldErrors.zipCode ? 'true' : 'false'}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
+                      fieldErrors.zipCode
+                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
+                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
+                    }`}
+                  />
+                  {fieldErrors.zipCode ? <p className="mt-1 text-sm text-red-600">{fieldErrors.zipCode}</p> : null}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-800">Email</label>
-                <input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} required className="w-full rounded-md border border-slate-300 px-3 py-2" />
+                <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-800">Email (Optional)</label>
+                <input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} autoComplete="email" className="w-full rounded-md border border-slate-300 px-3 py-2" />
               </div>
 
               <div className={`rounded-md border p-4 ${consentError ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50'}`}>
@@ -324,7 +414,6 @@ export default function Home() {
 
               <button
                 type="submit"
-                disabled={!consentChecked}
                 className="w-full rounded-md bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 Get Medicare Help
