@@ -122,6 +122,7 @@ export default function AdminDashboardClient() {
   };
 
   const formOptions = useMemo(() => ['all', ...new Set(items.map((i) => i.formType))], [items]);
+  const formatToken = (token?: string) => token || '-';
 
   return (
     <div className="min-h-screen bg-slate-950 p-4 text-white md:p-8">
@@ -149,12 +150,12 @@ export default function AdminDashboardClient() {
 
       <div className="overflow-x-auto rounded border border-slate-800">
         <table className="w-full text-sm">
-          <thead className="bg-slate-900"><tr><th className="p-2 text-left">Date/Time</th><th className="p-2 text-left">Form Type</th><th className="p-2 text-left">Name</th><th className="p-2 text-left">Email</th><th className="p-2 text-left">Service</th><th className="p-2 text-left">Consent</th><th className="p-2 text-left">Status</th></tr></thead>
+          <thead className="bg-slate-900"><tr><th className="p-2 text-left">Date/Time</th><th className="p-2 text-left">Form Type</th><th className="p-2 text-left">Name</th><th className="p-2 text-left">Email</th><th className="p-2 text-left">Service</th><th className="p-2 text-left">LeadiD Token</th><th className="p-2 text-left">Consent</th><th className="p-2 text-left">Status</th></tr></thead>
           <tbody>
             {items.map((s) => (
               <tr key={s.id} className="cursor-pointer border-t border-slate-800 hover:bg-slate-900/70" onClick={() => setSelected(s)}>
                 <td className="p-2">{new Date(s.createdAt).toLocaleString()}</td>
-                <td className="p-2">{s.formType}</td><td className="p-2">{s.fullName}</td><td className="p-2">{s.email}</td><td className="p-2">{s.serviceInterest || '-'}</td><td className="p-2">{s.consent_checked ? 'Yes' : 'No'}</td><td className="p-2">{s.status}</td>
+                <td className="p-2">{s.formType}</td><td className="p-2">{s.fullName}</td><td className="p-2">{s.email}</td><td className="p-2">{s.serviceInterest || '-'}</td><td className="max-w-56 p-2 font-mono text-xs text-slate-300">{formatToken(s.leadiD_token)}</td><td className="p-2">{s.consent_checked ? 'Yes' : 'No'}</td><td className="p-2">{s.status}</td>
               </tr>
             ))}
           </tbody>
@@ -171,6 +172,20 @@ export default function AdminDashboardClient() {
         <div className="fixed inset-0 bg-black/60 p-4" onClick={() => setSelected(null)}>
           <div className="ml-auto h-full w-full max-w-xl overflow-auto rounded bg-slate-900 p-4" onClick={(e) => e.stopPropagation()}>
             <h2 className="text-xl font-semibold">Submission Detail</h2>
+            <div className="mt-4 grid gap-3 rounded border border-slate-800 bg-slate-950/60 p-4 text-sm">
+              <div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">Name</div>
+                <div>{selected.fullName || '-'}</div>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">Email</div>
+                <div>{selected.email || '-'}</div>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">LeadiD Token</div>
+                <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.leadiD_token)}</div>
+              </div>
+            </div>
             <pre className="mt-4 whitespace-pre-wrap text-xs">{JSON.stringify(selected, null, 2)}</pre>
             <div className="mt-4 flex gap-2">
               <button onClick={() => updateStatus(selected.id, 'seen')} className="rounded bg-blue-600 px-3 py-1">Mark Seen</button>
