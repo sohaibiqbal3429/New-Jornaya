@@ -108,16 +108,14 @@ export default function PrivacyPolicyPage() {
             className="group flex items-center gap-3 rounded-2xl transition hover:opacity-90"
             aria-label="Chatters Health Solutions home"
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-50 to-sky-100 ring-1 ring-sky-200">
-              <Image
-                src="/chatters-health-logo.svg"
-                alt="Chatters Health Solutions logo"
-                width={34}
-                height={34}
-                className="h-8 w-8 object-contain"
-                priority
-              />
-            </div>
+            <Image
+              src="/chatters-health-logo-clean.png"
+              alt="Chatters Health Solutions logo"
+              width={44}
+              height={44}
+              className="h-11 w-11 object-contain"
+              priority
+            />
 
             <div className="min-w-0">
               <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-700">

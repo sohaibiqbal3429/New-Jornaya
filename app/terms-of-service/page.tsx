@@ -76,11 +76,11 @@ export default function TermsOfServicePage() {
         <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2 text-slate-800" aria-label="Chatters Health Solutions home">
             <Image
-              src="/chatters-health-logo.svg"
+              src="/chatters-health-logo-clean.png"
               alt="Chatters Health Solutions logo"
               width={40}
               height={40}
-              className="h-10 w-10"
+              className="h-10 w-10 object-contain"
               priority
             />
             <span className="text-lg font-semibold">Chatters Health Solutions</span>
