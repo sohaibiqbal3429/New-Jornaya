@@ -75,8 +75,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: 'Plus Jakarta Sans', 'Inter', 'Manrope', system-ui, sans-serif;
+  --font-mono: 'Manrope', 'SFMono-Regular', Consolas, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -265,4 +265,44 @@ html.theme-light .consent-checkbox {
 .tpmo-modal-scroll {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+
+@keyframes apha-rise {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes apha-float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.apha-rise {
+  animation: apha-rise 760ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.apha-rise:nth-child(2n) {
+  animation-delay: 90ms;
+}
+
+.apha-float {
+  animation: apha-float 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .apha-rise,
+  .apha-float {
+    animation: none;
+  }
 }

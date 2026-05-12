@@ -1,15 +1,11 @@
 import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-const _geist = Geist({ subsets: ["latin"] });
-const _geistMono = Geist_Mono({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
-  title: 'Chatters Health Solutions',
-  description: 'Chatters Health Solutions landing page for Medicare plan assistance.',
-  generator: 'Chatters Health Solutions',
+  title: 'Apha Health Plan | Modern Medicare Guidance',
+  description: 'Premium Medicare guidance, insurance assistance, plan comparison, licensed agent consultation, and enrollment support from Apha Health Plan.',
+  generator: 'Apha Health Plan',
   icons: {
     icon: '/favicon-32x32.png',
     shortcut: '/favicon-32x32.png',
