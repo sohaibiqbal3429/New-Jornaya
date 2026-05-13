@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { CheckCircle2, Mail, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
 
 type FormData = {
@@ -72,27 +73,12 @@ function ContactDetails({
   );
 }
 
-function generateLeadId() {
-  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID().toUpperCase();
-  }
-
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-    .replace(/[xy]/g, (char) => {
-      const random = Math.floor(Math.random() * 16);
-      const value = char === 'x' ? random : (random & 0x3) | 0x8;
-      return value.toString(16);
-    })
-    .toUpperCase();
-}
-
 export default function Home() {
   const consentTextVersion = 'v2.0';
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentError, setConsentError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<FormFieldName, string>>>({});
-  const [leadIdToken, setLeadIdToken] = useState('');
   const [submissionAlert, setSubmissionAlert] = useState<SubmissionAlertState>({
     open: false,
     title: '',
@@ -100,10 +86,6 @@ export default function Home() {
     variant: 'success',
   });
   const [formData, setFormData] = useState<FormData>(initialFormData);
-
-  useEffect(() => {
-    setLeadIdToken(generateLeadId());
-  }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -160,9 +142,10 @@ export default function Home() {
       return;
     }
 
-    const leadIdTokenValue = leadIdToken.trim();
+    const leadIdInput = document.getElementById('leadid_token') as HTMLInputElement | null;
+    const leadiDToken = leadIdInput?.value?.trim() ?? '';
 
-    if (!leadIdTokenValue) {
+    if (!leadiDToken) {
       setSubmissionAlert({
         open: true,
         title: 'Lead ID Missing',
@@ -177,12 +160,13 @@ export default function Home() {
       fullName: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email,
       phone: formData.phone,
+      zipCode: formData.zipCode,
       serviceInterest: 'Medicare Assistance',
-      message: `Zip Code: ${formData.zipCode}`,
+      message: '',
       consent_checked: true,
       consent_timestamp: new Date().toISOString(),
       consent_text_version: consentTextVersion,
-      leadiD_token: leadIdTokenValue,
+      leadid_token: leadiDToken,
       page_url: window.location.href,
       page_source: 'medicare landing form',
     };
@@ -206,7 +190,6 @@ export default function Home() {
       });
 
       setFormData(initialFormData);
-      setLeadIdToken(generateLeadId());
       setConsentChecked(false);
       setConsentError('');
     } catch {
@@ -396,8 +379,7 @@ export default function Home() {
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input id="leadid_token" name="universal_leadid" type="hidden" value={leadIdToken} readOnly />
-
+              <input id="leadid_token" name="universal_leadid" type="hidden" defaultValue="" />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-slate-800">
@@ -504,9 +486,9 @@ export default function Home() {
                   consentError ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50'
                 }`}
               >
-                <label htmlFor="consent" className="flex items-start gap-3 text-sm text-slate-700">
+                <label htmlFor="leadid_tcpa_disclosure" className="flex items-start gap-3 text-sm text-slate-700">
                   <input
-                    id="consent"
+                    id="leadid_tcpa_disclosure"
                     type="checkbox"
                     checked={consentChecked}
                     onChange={(event) => {
@@ -541,6 +523,18 @@ export default function Home() {
           Privacy Policy
         </Link>
       </div>
+
+      <Script id="LeadiDscript" strategy="afterInteractive">{`(function() {
+var s = document.createElement('script');
+s.id = 'LeadiDscript_campaign';
+s.type = 'text/javascript';
+s.async = true;
+s.src = 'https://create.lidstatic.com/campaign/f3982147-9948-8ae0-9315-8ceb32269185.js?snippet_version=2&f=reset';
+var LeadiDscript = document.getElementById('LeadiDscript');
+if (LeadiDscript && LeadiDscript.parentNode) {
+  LeadiDscript.parentNode.insertBefore(s, LeadiDscript);
+}
+})();`}</Script>
 
       <footer className="border-t border-slate-200 bg-white py-10">
         <div className="mx-auto max-w-6xl px-4 text-sm text-slate-600 sm:px-6 lg:px-8">

@@ -8,6 +8,7 @@ type Submission = {
   formType: string;
   fullName: string;
   email: string;
+  zipCode?: string;
   company?: string;
   serviceInterest?: string;
   consent_checked: boolean;
@@ -18,6 +19,7 @@ type Submission = {
   leadiD_token?: string;
   lead_id?: string;
   journey_identifier?: string;
+  isVarified?: boolean;
 };
 
 export default function AdminDashboardClient() {

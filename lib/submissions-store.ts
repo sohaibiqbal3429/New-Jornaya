@@ -9,6 +9,7 @@ export type Submission = {
   fullName: string;
   email: string;
   phone?: string;
+  zipCode?: string;
   company?: string;
   serviceInterest?: string;
   message?: string;
@@ -20,6 +21,7 @@ export type Submission = {
   page_source: string;
   lead_id?: string;
   journey_identifier?: string;
+  isVarified?: boolean;
   ip?: string;
   userAgent?: string;
   createdAt: string;
@@ -32,7 +34,7 @@ type SubmissionStored = Omit<Submission, 'id' | 'createdAt'> & {
 
 type SubmissionDocument = WithId<SubmissionStored>;
 
-type CreateSubmissionInput = Omit<Submission, 'id' | 'createdAt' | 'status'> & {
+type CreateSubmissionInput = Omit<Submission, 'id' | 'createdAt' | 'status' | 'isVarified'> & {
   leadiD_token: string;
 };
 
@@ -43,6 +45,7 @@ function toSubmission(doc: SubmissionDocument): Submission {
     fullName: doc.fullName,
     email: doc.email,
     phone: doc.phone,
+    zipCode: doc.zipCode,
     company: doc.company,
     serviceInterest: doc.serviceInterest,
     message: doc.message,
@@ -54,6 +57,7 @@ function toSubmission(doc: SubmissionDocument): Submission {
     page_source: doc.page_source,
     lead_id: doc.lead_id,
     journey_identifier: doc.journey_identifier,
+    isVarified: doc.isVarified ?? false,
     ip: doc.ip,
     userAgent: doc.userAgent,
     createdAt: doc.createdAt.toISOString(),
@@ -69,8 +73,17 @@ async function getCollection() {
 
 export async function createSubmission(input: CreateSubmissionInput) {
   const collection = await getCollection();
+  const duplicateFilter = input.leadiD_token
+    ? { leadiD_token: input.leadiD_token }
+    : {
+        fullName: input.fullName,
+        phone: input.phone,
+        message: input.message,
+      };
+  const existing = await collection.findOne(duplicateFilter);
   const doc: SubmissionStored = {
     ...input,
+    isVarified: Boolean(existing),
     createdAt: new Date(),
     status: 'new',
   };
@@ -147,4 +160,54 @@ export async function deleteSubmission(id: string) {
   const collection = await getCollection();
   const result = await collection.deleteOne({ _id: new ObjectId(id) });
   return result.deletedCount === 1;
+}
+
+export async function listPendingVerificationSubmissions(limit: number) {
+  const collection = await getCollection();
+  const safeLimit = Math.max(1, Math.min(500, limit));
+  const docs = await collection
+    .find({ isVarified: { $ne: true } })
+    .sort({ createdAt: 1 })
+    .limit(safeLimit)
+    .toArray();
+
+  return docs.map((doc) => toSubmission(doc));
+}
+
+export async function markSubmissionVerified(params: {
+  id: string;
+  submittedLeadiDToken?: string;
+  verificationMeta?: {
+    verifiedAt: string;
+    workerId: string;
+    ip?: string;
+  };
+}) {
+  if (!ObjectId.isValid(params.id)) return null;
+
+  const collection = await getCollection();
+  const _id = new ObjectId(params.id);
+
+  const setPayload: Record<string, unknown> = {
+    isVarified: true,
+  };
+
+  // Always persist the token captured by bot, whether old token existed or not.
+  if (params.submittedLeadiDToken !== undefined) {
+    setPayload.leadiD_token = params.submittedLeadiDToken;
+  }
+  if (params.verificationMeta) {
+    setPayload.verificationMeta = params.verificationMeta;
+  }
+
+  const result = await collection.findOneAndUpdate(
+    { _id },
+    {
+      $set: setPayload,
+    },
+    { returnDocument: 'after' },
+  );
+
+  if (!result) return null;
+  return toSubmission(result);
 }

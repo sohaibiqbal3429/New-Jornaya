@@ -4,7 +4,10 @@ import { createSubmission } from '@/lib/submissions-store';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
-    if (!body?.fullName || !body?.phone || !body?.message || !body?.leadiD_token || typeof body?.consent_checked !== 'boolean') {
+    const leadiDToken = body?.leadiD_token || body?.leadid_token || body?.universal_leadid;
+    const zipCode = typeof body?.zipCode === 'string' ? body.zipCode.trim() : '';
+    const message = typeof body?.message === 'string' ? body.message.trim() : '';
+    if (!body?.fullName || !body?.phone || !zipCode || !leadiDToken || typeof body?.consent_checked !== 'boolean') {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
@@ -16,13 +19,14 @@ export async function POST(req: NextRequest) {
       fullName: body.fullName,
       email: body.email || '',
       phone: body.phone,
+      zipCode,
       company: body.company,
       serviceInterest: body.serviceInterest || 'Medicare Assistance',
-      message: body.message,
+      message,
       consent_checked: body.consent_checked,
       consent_timestamp: body.consent_timestamp || new Date().toISOString(),
       consent_text_version: body.consent_text_version || 'v2.0',
-      leadiD_token: body.leadiD_token,
+      leadiD_token: leadiDToken,
       page_url: body.page_url || req.nextUrl.toString(),
       page_source: body.page_source || 'medicare landing form',
       lead_id: body.lead_id,

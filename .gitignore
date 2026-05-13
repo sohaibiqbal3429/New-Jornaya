@@ -9,3 +9,6 @@ node_modules/
 # .env*.local
 .DS_Store
 .data/
+project2-worker/node_modules/
+project2-worker/logs/
+project2-worker/.env
