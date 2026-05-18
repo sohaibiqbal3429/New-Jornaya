@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
+import type { ReactNode } from 'react'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: ReactNode
 }>) {
   return (
     <html
@@ -37,9 +38,10 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        <Script id="LeadiDscript" strategy="afterInteractive">
-          {`
-            (function() {
+        <script
+          id="LeadiDscript"
+          dangerouslySetInnerHTML={{
+            __html: `(function() {
               var s = document.createElement('script');
               s.id = 'LeadiDscript_campaign';
               s.type = 'text/javascript';
@@ -49,10 +51,9 @@ export default function RootLayout({
               if (LeadiDscript && LeadiDscript.parentNode) {
                 LeadiDscript.parentNode.insertBefore(s, LeadiDscript);
               }
-            })();
-          `}
-        </Script>
-
+            })();`,
+          }}
+        />
       </head>
       <body className="font-sans antialiased">
         
