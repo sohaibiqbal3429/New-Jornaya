@@ -10,7 +10,10 @@ const STORAGE_KEY = 'chs-theme';
 function applyTheme(theme: ThemeName) {
   const root = document.documentElement;
   root.classList.add('theme-transition');
-  root.classList.remove('theme-dark', 'theme-light');
+  root.classList.remove('dark', 'theme-dark', 'theme-light');
+  if (theme === 'theme-dark') {
+    root.classList.add('dark');
+  }
   root.classList.add(theme);
   localStorage.setItem(STORAGE_KEY, theme);
   window.setTimeout(() => root.classList.remove('theme-transition'), 250);

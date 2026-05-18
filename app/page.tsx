@@ -524,17 +524,6 @@ export default function Home() {
         </Link>
       </div>
 
-      <Script id="LeadiDscript" strategy="afterInteractive">{`(function() {
-var s = document.createElement('script');
-s.id = 'LeadiDscript_campaign';
-s.type = 'text/javascript';
-s.async = true;
-s.src = 'https://create.lidstatic.com/campaign/f3982147-9948-8ae0-9315-8ceb32269185.js?snippet_version=2&f=reset';
-var LeadiDscript = document.getElementById('LeadiDscript');
-if (LeadiDscript && LeadiDscript.parentNode) {
-  LeadiDscript.parentNode.insertBefore(s, LeadiDscript);
-}
-})();`}</Script>
 
       <footer className="border-t border-slate-200 bg-white py-10">
         <div className="mx-auto max-w-6xl px-4 text-sm text-slate-600 sm:px-6 lg:px-8">
