@@ -88,9 +88,11 @@ export default function AdminDashboardClient() {
   }, []);
 
   const pages = Math.max(1, Math.ceil(total / 20));
+  const getPlaybackToken = (submission: Submission) =>
+    submission.original_leadiD_token || submission.leadiD_token || '';
 
   const exportCsv = () => {
-    const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status', 'LeadiD Token', 'Original LeadiD', 'Verification LeadiD'];
+    const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status', 'Playback LeadiD', 'Stored LeadiD', 'Verification LeadiD'];
     const rows = items.map((s) => [
       s.createdAt,
       s.formType,
@@ -100,8 +102,8 @@ export default function AdminDashboardClient() {
       s.serviceInterest ?? '',
       String(s.consent_checked),
       s.status,
+      getPlaybackToken(s),
       s.leadiD_token ?? '',
-      s.original_leadiD_token ?? '',
       s.verification_leadiD_token ?? '',
     ]);
     const csv = [header, ...rows]
@@ -162,12 +164,12 @@ export default function AdminDashboardClient() {
 
       <div className="overflow-x-auto rounded border border-slate-800">
         <table className="w-full text-sm">
-          <thead className="bg-slate-900"><tr><th className="p-2 text-left">Date/Time</th><th className="p-2 text-left">Form Type</th><th className="p-2 text-left">Name</th><th className="p-2 text-left">Email</th><th className="p-2 text-left">Service</th><th className="p-2 text-left">LeadiD Token</th><th className="p-2 text-left">Consent</th><th className="p-2 text-left">Status</th></tr></thead>
+          <thead className="bg-slate-900"><tr><th className="p-2 text-left">Date/Time</th><th className="p-2 text-left">Form Type</th><th className="p-2 text-left">Name</th><th className="p-2 text-left">Email</th><th className="p-2 text-left">Service</th><th className="p-2 text-left">Playback Token</th><th className="p-2 text-left">Consent</th><th className="p-2 text-left">Status</th></tr></thead>
           <tbody>
             {items.map((s) => (
               <tr key={s.id} className="cursor-pointer border-t border-slate-800 hover:bg-slate-900/70" onClick={() => setSelected(s)}>
                 <td className="p-2">{new Date(s.createdAt).toLocaleString()}</td>
-                <td className="p-2">{s.formType}</td><td className="p-2">{s.fullName}</td><td className="p-2">{s.email}</td><td className="p-2">{s.serviceInterest || '-'}</td><td className="max-w-56 p-2 font-mono text-xs text-slate-300">{formatToken(s.leadiD_token)}</td><td className="p-2">{s.consent_checked ? 'Yes' : 'No'}</td><td className="p-2">{s.status}</td>
+                <td className="p-2">{s.formType}</td><td className="p-2">{s.fullName}</td><td className="p-2">{s.email}</td><td className="p-2">{s.serviceInterest || '-'}</td><td className="max-w-56 p-2 font-mono text-xs text-slate-300">{formatToken(getPlaybackToken(s))}</td><td className="p-2">{s.consent_checked ? 'Yes' : 'No'}</td><td className="p-2">{s.status}</td>
               </tr>
             ))}
           </tbody>
@@ -194,12 +196,12 @@ export default function AdminDashboardClient() {
                 <div>{selected.email || '-'}</div>
               </div>
               <div>
-                <div className="text-xs uppercase tracking-wide text-slate-400">LeadiD Token</div>
-                <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.leadiD_token)}</div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">Playback Token</div>
+                <div className="break-all font-mono text-xs text-emerald-300">{formatToken(getPlaybackToken(selected))}</div>
               </div>
               <div>
-                <div className="text-xs uppercase tracking-wide text-slate-400">Original Browser Token</div>
-                <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.original_leadiD_token)}</div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">Stored Original Browser Token</div>
+                <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.original_leadiD_token || selected.leadiD_token)}</div>
               </div>
               <div>
                 <div className="text-xs uppercase tracking-wide text-slate-400">Verification Worker Token</div>

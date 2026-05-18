@@ -224,9 +224,6 @@ export async function markSubmissionVerified(params: {
 
   if (hasValidSubmittedToken) {
     setPayload.verification_leadiD_token = submittedLeadiDToken;
-    if (!currentPrimaryToken) {
-      setPayload.leadiD_token = submittedLeadiDToken;
-    }
   }
   if (params.verificationMeta) {
     setPayload.verificationMeta = params.verificationMeta;

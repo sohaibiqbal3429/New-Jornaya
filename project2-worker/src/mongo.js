@@ -70,9 +70,6 @@ export async function markSubmissionComplete(originalId, { leadiD_token, ip, wor
 
   if (isValidLeadiDToken(verificationToken)) {
     setPayload.verification_leadiD_token = verificationToken;
-    if (!existingPrimaryToken) {
-      setPayload.leadiD_token = verificationToken;
-    }
   }
 
   if (nextIp) {
