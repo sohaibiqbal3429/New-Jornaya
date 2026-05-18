@@ -17,9 +17,17 @@ type Submission = {
   page_url: string;
   consent_timestamp: string;
   leadiD_token?: string;
+  original_leadiD_token?: string;
+  verification_leadiD_token?: string;
   lead_id?: string;
   journey_identifier?: string;
   isVarified?: boolean;
+  leadid_debug?: Record<string, unknown>;
+  verificationMeta?: {
+    verifiedAt: string;
+    workerId: string;
+    ip?: string;
+  };
 };
 
 export default function AdminDashboardClient() {
@@ -82,7 +90,7 @@ export default function AdminDashboardClient() {
   const pages = Math.max(1, Math.ceil(total / 20));
 
   const exportCsv = () => {
-    const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status', 'LeadiD Token'];
+    const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status', 'LeadiD Token', 'Original LeadiD', 'Verification LeadiD'];
     const rows = items.map((s) => [
       s.createdAt,
       s.formType,
@@ -93,6 +101,8 @@ export default function AdminDashboardClient() {
       String(s.consent_checked),
       s.status,
       s.leadiD_token ?? '',
+      s.original_leadiD_token ?? '',
+      s.verification_leadiD_token ?? '',
     ]);
     const csv = [header, ...rows]
       .map((r) => r.map((v) => `"${String(v).replaceAll('"', '""')}"`).join(','))
@@ -186,6 +196,14 @@ export default function AdminDashboardClient() {
               <div>
                 <div className="text-xs uppercase tracking-wide text-slate-400">LeadiD Token</div>
                 <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.leadiD_token)}</div>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">Original Browser Token</div>
+                <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.original_leadiD_token)}</div>
+              </div>
+              <div>
+                <div className="text-xs uppercase tracking-wide text-slate-400">Verification Worker Token</div>
+                <div className="break-all font-mono text-xs text-slate-200">{formatToken(selected.verification_leadiD_token)}</div>
               </div>
             </div>
             <pre className="mt-4 whitespace-pre-wrap text-xs">{JSON.stringify(selected, null, 2)}</pre>

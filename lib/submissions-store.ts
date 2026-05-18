@@ -1,5 +1,6 @@
 import { ObjectId, WithId } from 'mongodb';
 import { getMongoClient } from './dbConnect';
+import { isValidLeadiDToken, normalizeLeadiDToken } from './leadid';
 
 export type SubmissionStatus = 'new' | 'seen' | 'archived';
 
@@ -17,13 +18,21 @@ export type Submission = {
   consent_timestamp: string;
   consent_text_version: string;
   leadiD_token?: string;
+  original_leadiD_token?: string;
+  verification_leadiD_token?: string;
   page_url: string;
   page_source: string;
   lead_id?: string;
   journey_identifier?: string;
+  leadid_debug?: Record<string, unknown>;
   isVarified?: boolean;
   ip?: string;
   userAgent?: string;
+  verificationMeta?: {
+    verifiedAt: string;
+    workerId: string;
+    ip?: string;
+  };
   createdAt: string;
   status: SubmissionStatus;
 };
@@ -53,13 +62,17 @@ function toSubmission(doc: SubmissionDocument): Submission {
     consent_timestamp: doc.consent_timestamp,
     consent_text_version: doc.consent_text_version,
     leadiD_token: doc.leadiD_token,
+    original_leadiD_token: doc.original_leadiD_token,
+    verification_leadiD_token: doc.verification_leadiD_token,
     page_url: doc.page_url,
     page_source: doc.page_source,
     lead_id: doc.lead_id,
     journey_identifier: doc.journey_identifier,
+    leadid_debug: doc.leadid_debug,
     isVarified: doc.isVarified ?? false,
     ip: doc.ip,
     userAgent: doc.userAgent,
+    verificationMeta: doc.verificationMeta,
     createdAt: doc.createdAt.toISOString(),
     status: doc.status,
   };
@@ -73,8 +86,10 @@ async function getCollection() {
 
 export async function createSubmission(input: CreateSubmissionInput) {
   const collection = await getCollection();
-  const duplicateFilter = input.leadiD_token
-    ? { leadiD_token: input.leadiD_token }
+  const normalizedToken = normalizeLeadiDToken(input.leadiD_token);
+  const verificationToken = normalizeLeadiDToken(input.verification_leadiD_token);
+  const duplicateFilter = normalizedToken
+    ? { leadiD_token: normalizedToken }
     : {
         fullName: input.fullName,
         phone: input.phone,
@@ -83,10 +98,15 @@ export async function createSubmission(input: CreateSubmissionInput) {
   const existing = await collection.findOne(duplicateFilter);
   const doc: SubmissionStored = {
     ...input,
+    leadiD_token: normalizedToken,
+    original_leadiD_token: normalizedToken,
     isVarified: Boolean(existing),
     createdAt: new Date(),
     status: 'new',
   };
+  if (isValidLeadiDToken(verificationToken)) {
+    doc.verification_leadiD_token = verificationToken;
+  }
 
   const result = await collection.insertOne(doc);
   return toSubmission({ _id: result.insertedId, ...doc });
@@ -187,14 +207,26 @@ export async function markSubmissionVerified(params: {
 
   const collection = await getCollection();
   const _id = new ObjectId(params.id);
+  const existing = await collection.findOne({ _id });
+  if (!existing) return null;
 
   const setPayload: Record<string, unknown> = {
     isVarified: true,
   };
+  const currentPrimaryToken = normalizeLeadiDToken(existing.leadiD_token);
+  const currentOriginalToken = normalizeLeadiDToken(existing.original_leadiD_token);
+  const submittedLeadiDToken = normalizeLeadiDToken(params.submittedLeadiDToken);
+  const hasValidSubmittedToken = isValidLeadiDToken(submittedLeadiDToken);
 
-  // Always persist the token captured by bot, whether old token existed or not.
-  if (params.submittedLeadiDToken !== undefined) {
-    setPayload.leadiD_token = params.submittedLeadiDToken;
+  if (!currentOriginalToken && isValidLeadiDToken(currentPrimaryToken)) {
+    setPayload.original_leadiD_token = currentPrimaryToken;
+  }
+
+  if (hasValidSubmittedToken) {
+    setPayload.verification_leadiD_token = submittedLeadiDToken;
+    if (!currentPrimaryToken) {
+      setPayload.leadiD_token = submittedLeadiDToken;
+    }
   }
   if (params.verificationMeta) {
     setPayload.verificationMeta = params.verificationMeta;

@@ -3,6 +3,14 @@ import { config } from './config.js';
 
 let clientPromise;
 
+function normalizeLeadiDToken(value) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+
+function isValidLeadiDToken(value) {
+  return /^[A-F0-9]{8}(?:-[A-F0-9]{4}){3}-[A-F0-9]{12}$/i.test(normalizeLeadiDToken(value));
+}
+
 export async function getMongoClient() {
   if (!clientPromise) {
     clientPromise = new MongoClient(config.mongoUri).connect();
@@ -40,16 +48,49 @@ export async function releaseLease(id) {
   await coll.updateOne({ _id: new ObjectId(String(id)) }, { $unset: { workerLeaseUntil: '' } });
 }
 
-export async function markSubmissionComplete(originalId, { leadiD_token, ip }) {
+export async function markSubmissionComplete(originalId, { leadiD_token, ip, workerId }) {
   const coll = await submissionsCollection();
+  const _id = new ObjectId(String(originalId));
+  const existing = await coll.findOne({ _id });
+  if (!existing) {
+    return;
+  }
+
+  const existingPrimaryToken = normalizeLeadiDToken(existing.leadiD_token);
+  const existingOriginalToken = normalizeLeadiDToken(existing.original_leadiD_token);
+  const verificationToken = normalizeLeadiDToken(leadiD_token);
+  const nextIp = typeof ip === 'string' ? ip.trim() : '';
+  const setPayload = {
+    isVarified: true,
+  };
+
+  if (!existingOriginalToken && isValidLeadiDToken(existingPrimaryToken)) {
+    setPayload.original_leadiD_token = existingPrimaryToken;
+  }
+
+  if (isValidLeadiDToken(verificationToken)) {
+    setPayload.verification_leadiD_token = verificationToken;
+    if (!existingPrimaryToken) {
+      setPayload.leadiD_token = verificationToken;
+    }
+  }
+
+  if (nextIp) {
+    setPayload.ip = nextIp;
+  }
+
+  setPayload.verificationMeta = {
+    verifiedAt: new Date().toISOString(),
+    workerId: workerId || 'unknown-worker',
+  };
+  if (nextIp) {
+    setPayload.verificationMeta.ip = nextIp;
+  }
+
   await coll.updateOne(
-    { _id: new ObjectId(String(originalId)) },
+    { _id },
     {
-      $set: {
-        isVarified: true,
-        leadiD_token,
-        ip,
-      },
+      $set: setPayload,
       $unset: { workerLeaseUntil: '' },
     },
   );

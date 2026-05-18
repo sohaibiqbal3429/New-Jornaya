@@ -20,7 +20,8 @@ import { getZipDb, lookupProxyUrlTemplate } from './zip-db.js';
  *
  * Selectors match `app/page.tsx` (Medicare contact form):
  * - section#contact — form section
- * - form: input#leadid_token[name=universal_leadid] (hidden)
+ * - body-level: input#leadid_token[name=universal_leadid] (canonical hidden token)
+ * - form: input#leadid_token_form[name=universal_leadid] (mirrored hidden token)
  * - input#firstName[name=firstName], #lastName, #phone, #zipCode, #email
  * - input#leadid_tcpa_disclosure (consent)
  * - button "Get Medicare Help" (type=submit)
@@ -330,15 +331,15 @@ export async function processSubmission(submission, workerId) {
     await consent.waitFor({ state: 'visible', timeout: 25_000 });
     await consent.check({ force: true });
 
-    log('leadid_wait', `worker=${workerId} id=${originalId} waiting for input#leadid_token[name=universal_leadid] (LeadiD snippet)`);
+    log('leadid_wait', `worker=${workerId} id=${originalId} waiting for input#leadid_token[name=universal_leadid] (canonical LeadiD field)`);
     await page.waitForFunction(
       () => {
-        const el = document.querySelector('section#contact input#leadid_token[name="universal_leadid"]');
+        const el = document.querySelector('input#leadid_token[name="universal_leadid"]');
         return !!(el && 'value' in el && String(el.value).trim().length > 8);
       },
       { timeout: 120_000 },
     );
-    const newToken = (await page.locator('section#contact input#leadid_token').inputValue()).trim();
+    const newToken = (await page.locator('input#leadid_token').inputValue()).trim();
     log('leadid_ready', `worker=${workerId} id=${originalId} token_len=${newToken.length} prefix=${newToken.slice(0, 12)}…`);
 
     const submitRespPromise = page.waitForResponse(
@@ -393,7 +394,11 @@ export async function processSubmission(submission, workerId) {
       `api submission.ip:   ${apiReportedIp || '—'}`,
     ]);
 
-    await markSubmissionComplete(originalId, { leadiD_token: newToken, ip: ipForMongo });
+    await markSubmissionComplete(originalId, {
+      leadiD_token: newToken,
+      ip: ipForMongo,
+      workerId: `worker-${workerId}`,
+    });
 
     const dupId = typeof body.submission?.id === 'string' ? body.submission.id : null;
     if (dupId && dupId !== originalId) {

@@ -1,13 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSubmission } from '@/lib/submissions-store';
+import { isValidLeadiDToken, normalizeLeadiDToken } from '@/lib/leadid';
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
-    const leadiDToken = body?.leadiD_token || body?.leadid_token || body?.universal_leadid;
+    const leadiDToken = normalizeLeadiDToken(
+      body?.leadiD_token || body?.leadid_token || body?.universal_leadid,
+    );
     const zipCode = typeof body?.zipCode === 'string' ? body.zipCode.trim() : '';
     const message = typeof body?.message === 'string' ? body.message.trim() : '';
-    if (!body?.fullName || !body?.phone || !zipCode || !leadiDToken || typeof body?.consent_checked !== 'boolean') {
+    if (
+      !body?.fullName ||
+      !body?.phone ||
+      !zipCode ||
+      !isValidLeadiDToken(leadiDToken) ||
+      typeof body?.consent_checked !== 'boolean'
+    ) {
       return NextResponse.json({ error: 'Missing required fields.' }, { status: 400 });
     }
 
@@ -31,6 +40,8 @@ export async function POST(req: NextRequest) {
       page_source: body.page_source || 'medicare landing form',
       lead_id: body.lead_id,
       journey_identifier: body.journey_identifier,
+      leadid_debug:
+        body.leadid_debug && typeof body.leadid_debug === 'object' ? body.leadid_debug : undefined,
       ip,
       userAgent,
     });

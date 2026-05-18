@@ -1,11 +1,20 @@
 'use client';
 
-import { useState, type ChangeEvent, type FormEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
 import { CheckCircle2, Mail, MapPin, Phone } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import Script from 'next/script';
 import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
+import {
+  buildLeadIdSubmissionSnapshot,
+  getCanonicalLeadIdInput,
+  getLeadIdDebugState,
+  leadIdLog,
+  markLeadIdSubmission,
+  readCurrentLeadIdToken,
+  waitForValidLeadIdToken,
+} from '@/lib/leadid-browser';
+import { isValidLeadiDToken, LEADID_FIELD_NAME, LEADID_FORM_FIELD_ID } from '@/lib/leadid';
 
 type FormData = {
   firstName: string;
@@ -78,6 +87,9 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
   const [consentError, setConsentError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [leadIdReady, setLeadIdReady] = useState(false);
+  const [leadIdStatusMessage, setLeadIdStatusMessage] = useState('Initializing secure lead verification…');
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<FormFieldName, string>>>({});
   const [submissionAlert, setSubmissionAlert] = useState<SubmissionAlertState>({
     open: false,
@@ -86,6 +98,45 @@ export default function Home() {
     variant: 'success',
   });
   const [formData, setFormData] = useState<FormData>(initialFormData);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const updateLeadIdStatus = () => {
+      const token = readCurrentLeadIdToken();
+      const ready = isValidLeadiDToken(token);
+
+      if (cancelled) {
+        return;
+      }
+
+      setLeadIdReady(ready);
+
+      if (ready) {
+        setLeadIdStatusMessage('Secure lead verification ready.');
+        return;
+      }
+
+      const state = getLeadIdDebugState();
+      const elapsedMs = Date.now() - new Date(state.session.pageLoadedAt).getTime();
+      if (elapsedMs > 10_000) {
+        setLeadIdStatusMessage(
+          'Lead verification token is still missing. Disable ad blockers or browser tracking protection, then reload the page.',
+        );
+        return;
+      }
+
+      setLeadIdStatusMessage('Initializing secure lead verification…');
+    };
+
+    updateLeadIdStatus();
+    const intervalId = window.setInterval(updateLeadIdStatus, 500);
+
+    return () => {
+      cancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, []);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -112,6 +163,10 @@ export default function Home() {
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
 
     const nextFieldErrors = requiredFields.reduce<Partial<Record<FormFieldName, string>>>(
       (errors, field) => {
@@ -142,8 +197,8 @@ export default function Home() {
       return;
     }
 
-    const leadIdInput = document.getElementById('leadid_token') as HTMLInputElement | null;
-    const leadiDToken = leadIdInput?.value?.trim() ?? '';
+    setIsSubmitting(true);
+    const leadiDToken = await waitForValidLeadIdToken();
 
     if (!leadiDToken) {
       setSubmissionAlert({
@@ -152,8 +207,12 @@ export default function Home() {
         message: 'The LeadiD token was not generated. Please refresh the page and try again.',
         variant: 'error',
       });
+      setIsSubmitting(false);
       return;
     }
+
+    leadIdLog('submit using token', { token: leadiDToken });
+    markLeadIdSubmission(leadiDToken);
 
     const payload = {
       formType: 'medicare_contact',
@@ -169,6 +228,7 @@ export default function Home() {
       leadid_token: leadiDToken,
       page_url: window.location.href,
       page_source: 'medicare landing form',
+      leadid_debug: buildLeadIdSubmissionSnapshot(),
     };
 
     try {
@@ -192,6 +252,10 @@ export default function Home() {
       setFormData(initialFormData);
       setConsentChecked(false);
       setConsentError('');
+      const canonicalInput = getCanonicalLeadIdInput();
+      if (canonicalInput) {
+        canonicalInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
     } catch {
       setSubmissionAlert({
         open: true,
@@ -199,6 +263,8 @@ export default function Home() {
         message: 'We could not submit your request right now. Please try again shortly.',
         variant: 'error',
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -379,7 +445,13 @@ export default function Home() {
 
           <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input id="leadid_token" name="universal_leadid" type="hidden" defaultValue="" />
+              <input
+                id={LEADID_FORM_FIELD_ID}
+                name={LEADID_FIELD_NAME}
+                data-leadid-mirror="true"
+                type="hidden"
+                defaultValue=""
+              />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-slate-800">
@@ -506,10 +578,14 @@ export default function Home() {
 
               <button
                 type="submit"
+                disabled={!leadIdReady || isSubmitting}
                 className="w-full rounded-md bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Get Medicare Help
+                {isSubmitting ? 'Submitting…' : 'Get Medicare Help'}
               </button>
+              <p className={`text-sm ${leadIdReady ? 'text-emerald-700' : 'text-amber-700'}`}>
+                {leadIdStatusMessage}
+              </p>
             </form>
           </div>
         </div>
