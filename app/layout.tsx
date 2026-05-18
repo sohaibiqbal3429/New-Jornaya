@@ -14,39 +14,6 @@ const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
 })
 
-const leadIdScript = `
-  (function() {
-    var s = document.createElement('script');
-    s.id = 'LeadiDscript_campaign';
-    s.type = 'text/javascript';
-    s.async = true;
-    s.src = 'https://create.lidstatic.com/campaign/f3982147-9948-8ae0-9315-8ceb32269185.js?snippet_version=2';
-    var leadIdScriptNode = document.getElementById('LeadiDscript');
-    if (leadIdScriptNode && leadIdScriptNode.parentNode) {
-      leadIdScriptNode.parentNode.insertBefore(s, leadIdScriptNode);
-    }
-  })();
-`
-
-const themeLoaderScript = `
-  (function() {
-    var c = document.documentElement.classList;
-    try {
-      var storedTheme = localStorage.getItem('chs-theme');
-      var isLightTheme = storedTheme === 'theme-light';
-      c.remove('dark', 'theme-dark', 'theme-light');
-      if (isLightTheme) {
-        c.add('theme-light');
-        return;
-      }
-      c.add('dark', 'theme-dark');
-    } catch (e) {
-      c.remove('theme-light');
-      c.add('dark', 'theme-dark');
-    }
-  })();
-`
-
 export const metadata: Metadata = {
   title: 'Chatters Health Solutions',
   description: 'Chatters Health Solutions landing page for Medicare plan assistance.',
@@ -66,13 +33,41 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark theme-dark ${geist.variable} ${geistMono.variable}`}
+      className={`theme-dark ${geist.variable} ${geistMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased">
-        <Script id="LeadiDscript" strategy="afterInteractive">{leadIdScript}</Script>
+      <head>
+        <Script id="LeadiDscript" strategy="afterInteractive">
+          {`
+            (function() {
+              var s = document.createElement('script');
+              s.id = 'LeadiDscript_campaign';
+              s.type = 'text/javascript';
+              s.async = true;
+              s.src = 'https://create.lidstatic.com/campaign/f3982147-9948-8ae0-9315-8ceb32269185.js?snippet_version=2';
+              var LeadiDscript = document.getElementById('LeadiDscript');
+              if (LeadiDscript && LeadiDscript.parentNode) {
+                LeadiDscript.parentNode.insertBefore(s, LeadiDscript);
+              }
+            })();
+          `}
+        </Script>
 
-        <Script id="theme-loader" strategy="beforeInteractive">{themeLoaderScript}</Script>
+      </head>
+      <body className="font-sans antialiased">
+        
+        <Script id="theme-loader" strategy="beforeInteractive">
+          {`
+            (function() {
+              try {
+                var t = localStorage.getItem('chs-theme');
+                var c = document.documentElement.classList;
+                c.remove('theme-dark', 'theme-light');
+                c.add(t === 'theme-light' ? 'theme-light' : 'theme-dark');
+              } catch (e) {}
+            })();
+          `}
+        </Script>
 
         {children}
         <Analytics />
