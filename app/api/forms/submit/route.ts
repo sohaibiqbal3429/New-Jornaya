@@ -24,20 +24,20 @@ export async function POST(req: NextRequest) {
     const userAgent = req.headers.get('user-agent') || undefined;
 
     const created = await createSubmission({
-      formType: body.formType || 'medicare_contact',
+      formType: body.formType || 'alpha_legal_intake',
       fullName: body.fullName,
       email: body.email || '',
       phone: body.phone,
       zipCode,
       company: body.company,
-      serviceInterest: body.serviceInterest || 'Medicare Assistance',
+      serviceInterest: body.serviceInterest || 'Motor Vehicle Accident Leads',
       message,
       consent_checked: body.consent_checked,
       consent_timestamp: body.consent_timestamp || new Date().toISOString(),
-      consent_text_version: body.consent_text_version || 'v2.0',
+      consent_text_version: body.consent_text_version || 'legal-intake-v1.0',
       leadiD_token: leadiDToken,
       page_url: body.page_url || req.nextUrl.toString(),
-      page_source: body.page_source || 'medicare landing form',
+      page_source: body.page_source || 'alpha legal intake landing form',
       lead_id: body.lead_id,
       journey_identifier: body.journey_identifier,
       leadid_debug:
