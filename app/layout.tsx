@@ -1,42 +1,42 @@
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import Script from 'next/script'
-import { Suspense, type ReactNode } from 'react'
-import { Analytics } from '@vercel/analytics/next'
-import { LeadIdRuntime } from '@/components/LeadIdRuntime'
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
+import { Suspense, type ReactNode } from "react";
+import { Analytics } from "@vercel/analytics/next";
+import { LeadIdRuntime } from "@/components/LeadIdRuntime";
 import {
   LEADID_CANONICAL_FIELD_ID,
   LEADID_FIELD_NAME,
   LEADID_SCRIPT_ID,
   LEADID_SCRIPT_SRC,
-} from '@/lib/leadid'
-import './globals.css'
+} from "@/lib/leadid";
+import "./globals.css";
 
 const geist = Geist({
-  subsets: ['latin'],
-  variable: '--font-geist',
-})
+  subsets: ["latin"],
+  variable: "--font-geist",
+});
 
 const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-geist-mono',
-})
+  subsets: ["latin"],
+  variable: "--font-geist-mono",
+});
 
 export const metadata: Metadata = {
-  title: 'Chatters Health Solutions',
-  description: 'Chatters Health Solutions landing page for Medicare plan assistance.',
-  generator: 'Chatters Health Solutions',
+  title: "Alpha Legal Intake",
+  description:
+    "Alpha Legal Intake helps personal injury law firms grow with verified motor vehicle accident leads, live transfer calls, and professional intake support.",
+  generator: "Alpha Legal Intake",
   icons: {
-    icon: '/favicon-32x32.png',
-    shortcut: '/favicon-32x32.png',
-    apple: '/apple-icon.png',
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
   },
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: ReactNode
+  children: ReactNode;
 }>) {
   return (
     <html
@@ -81,5 +81,5 @@ export default function RootLayout({
         <Analytics />
       </body>
     </html>
-  )
+  );
 }

@@ -1,10 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState, type ChangeEvent, type FormEvent } from 'react';
-import { CheckCircle2, Mail, MapPin, Phone } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { PremiumSubmissionAlert } from '@/components/PremiumSubmissionAlert';
+import { useEffect, useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  ArrowRight,
+  CheckCircle2,
+  Mail,
+  MapPin,
+  Phone,
+  Scale,
+  ShieldCheck,
+  Star,
+} from "lucide-react";
+import Link from "next/link";
+import { PremiumSubmissionAlert } from "@/components/PremiumSubmissionAlert";
 import {
   buildLeadIdSubmissionSnapshot,
   getCanonicalLeadIdInput,
@@ -13,8 +21,12 @@ import {
   markLeadIdSubmission,
   readCurrentLeadIdToken,
   waitForValidLeadIdToken,
-} from '@/lib/leadid-browser';
-import { isValidLeadiDToken, LEADID_FIELD_NAME, LEADID_FORM_FIELD_ID } from '@/lib/leadid';
+} from "@/lib/leadid-browser";
+import {
+  isValidLeadiDToken,
+  LEADID_FIELD_NAME,
+  LEADID_FORM_FIELD_ID,
+} from "@/lib/leadid";
 
 type FormData = {
   firstName: string;
@@ -30,30 +42,76 @@ type SubmissionAlertState = {
   open: boolean;
   title: string;
   message: string;
-  variant: 'success' | 'error';
+  variant: "success" | "error";
 };
 
 const initialFormData: FormData = {
-  firstName: '',
-  lastName: '',
-  phone: '',
-  zipCode: '',
-  email: '',
+  firstName: "",
+  lastName: "",
+  phone: "",
+  zipCode: "",
+  email: "",
 };
 
 const requiredFields = [
-  { name: 'firstName', label: 'First Name' },
-  { name: 'lastName', label: 'Last Name' },
-  { name: 'phone', label: 'Phone Number' },
-  { name: 'zipCode', label: 'Zip Code' },
-] as const satisfies ReadonlyArray<{ name: Exclude<FormFieldName, 'email'>; label: string }>;
+  { name: "firstName", label: "First Name" },
+  { name: "lastName", label: "Last Name" },
+  { name: "phone", label: "Phone Number" },
+  { name: "zipCode", label: "Zip Code" },
+] as const satisfies ReadonlyArray<{
+  name: Exclude<FormFieldName, "email">;
+  label: string;
+}>;
 
-const fullConsentText = `Chatters Health Solutions is a privately owned website and is not associated with any state or Federal government, the Centers for Medicare & Medicaid Services (CMS), Healthcare.gov, or the Department of Health and Human Services. We are not an insurer or a licensed agency. We do not offer every plan available in your area. Plan availability depends on your resident zip code and participating carriers. For complete information about your options, please visit Medicare.gov, call 1-800-MEDICARE (TTY users: 1-877-486-2048) 24 hours a day, 7 days a week, or contact your local State Health Insurance Assistance Program (SHIP). Enrollment depends on the plan's contract renewal with Medicare. Enrollment may be limited to certain times of the year unless you qualify for a Special Enrollment Period or are in your Medicare Initial Election Period. By completing the contact form above or calling the number listed above, you may be connected with a licensed insurance agent who can answer your questions and provide information about Medicare Advantage, Part D, or Medicare Supplement insurance plans. Neither Chatters Health Solutions nor its agents are connected with or endorsed by the U.S. government or the federal Medicare program. Medicare Supplement insurance is available to those age 65 and older enrolled in Medicare. The purpose of this communication is the solicitation of insurance. Contact will be made by an insurance agent/producer or insurance company.`;
+const fullConsentText = `By checking this box and submitting this form, I consent to be contacted by Alpha Legal Intake and its law firm or intake partners by phone, email, text message, or prerecorded/artificial voice at the number and email I provided, including through automated dialing technology, about motor vehicle accident and personal injury legal intake services. I understand my consent is not required to purchase services, message and data rates may apply, and I can opt out at any time. I certify that the information submitted is accurate and that I am at least 18 years old.`;
+
+const services = [
+  {
+    title: "MVA Lead Generation",
+    description:
+      "Connect with claimants who are actively seeking help after motor vehicle accidents.",
+  },
+  {
+    title: "Live Transfer Calls",
+    description:
+      "Receive warm, real-time calls from screened prospects ready to discuss their accident details.",
+  },
+  {
+    title: "Personal Injury Intake",
+    description:
+      "Use a compliant intake flow that captures key case details for fast law firm review.",
+  },
+];
+
+const processSteps = [
+  "Submit your intake request and campaign goals.",
+  "We verify contact details, location, and accident interest.",
+  "Qualified prospects are routed to your intake team or call center.",
+  "Your firm reviews case fit and follows up with confidence.",
+];
+
+const faqs = [
+  {
+    question: "What types of cases does Alpha Legal Intake support?",
+    answer:
+      "We focus on motor vehicle accident and personal injury intake opportunities for law firms and legal marketers.",
+  },
+  {
+    question: "Can leads be delivered as live transfers?",
+    answer:
+      "Yes. Alpha Legal Intake can support live transfer workflows so your intake team can speak with interested prospects quickly.",
+  },
+  {
+    question: "Is consent captured on the intake form?",
+    answer:
+      "Yes. The homepage form keeps the existing LeadiD verification flow and records the displayed legal-intake consent language.",
+  },
+];
 
 function ContactDetails({
-  className = '',
-  iconClassName = 'h-5 w-5',
-  textClassName = 'text-sm text-slate-700',
+  className = "",
+  iconClassName = "h-5 w-5",
+  textClassName = "text-sm text-slate-700",
 }: {
   className?: string;
   iconClassName?: string;
@@ -61,20 +119,22 @@ function ContactDetails({
 }) {
   return (
     <div className={className}>
-      <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-slate-500">
-        Chatters Health Solutions LLC.
+      <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-teal-600">
+        Alpha Legal Intake
       </p>
       <div className={`space-y-3 ${textClassName}`}>
         <p className="flex items-center gap-3">
-          <Phone className={`${iconClassName} shrink-0 text-blue-600`} />
+          <Phone className={`${iconClassName} shrink-0 text-teal-600`} />
           <span>+1 (202) 984-8556</span>
         </p>
         <p className="flex items-center gap-3">
-          <Mail className={`${iconClassName} shrink-0 text-blue-600`} />
-          <span>admin@chattershealthsolutions.com</span>
+          <Mail className={`${iconClassName} shrink-0 text-teal-600`} />
+          <span>hello@alphalegalintake.com</span>
         </p>
         <p className="flex items-start gap-3">
-          <MapPin className={`${iconClassName} mt-0.5 shrink-0 text-blue-600`} />
+          <MapPin
+            className={`${iconClassName} mt-0.5 shrink-0 text-teal-600`}
+          />
           <span>1500 N Grant St STE R Denver, CO 80203 United States</span>
         </p>
       </div>
@@ -83,19 +143,23 @@ function ContactDetails({
 }
 
 export default function Home() {
-  const consentTextVersion = 'v2.0';
+  const consentTextVersion = "legal-intake-v1.0";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [consentChecked, setConsentChecked] = useState(false);
-  const [consentError, setConsentError] = useState('');
+  const [consentError, setConsentError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [leadIdReady, setLeadIdReady] = useState(false);
-  const [leadIdStatusMessage, setLeadIdStatusMessage] = useState('Initializing secure lead verification…');
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<FormFieldName, string>>>({});
+  const [leadIdStatusMessage, setLeadIdStatusMessage] = useState(
+    "Initializing secure lead verification…",
+  );
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<FormFieldName, string>>
+  >({});
   const [submissionAlert, setSubmissionAlert] = useState<SubmissionAlertState>({
     open: false,
-    title: '',
-    message: '',
-    variant: 'success',
+    title: "",
+    message: "",
+    variant: "success",
   });
   const [formData, setFormData] = useState<FormData>(initialFormData);
 
@@ -113,20 +177,21 @@ export default function Home() {
       setLeadIdReady(ready);
 
       if (ready) {
-        setLeadIdStatusMessage('Secure lead verification ready.');
+        setLeadIdStatusMessage("Secure lead verification ready.");
         return;
       }
 
       const state = getLeadIdDebugState();
-      const elapsedMs = Date.now() - new Date(state.session.pageLoadedAt).getTime();
+      const elapsedMs =
+        Date.now() - new Date(state.session.pageLoadedAt).getTime();
       if (elapsedMs > 10_000) {
         setLeadIdStatusMessage(
-          'Lead verification token is still missing. Disable ad blockers or browser tracking protection, then reload the page.',
+          "Lead verification token is still missing. Disable ad blockers or browser tracking protection, then reload the page.",
         );
         return;
       }
 
-      setLeadIdStatusMessage('Initializing secure lead verification…');
+      setLeadIdStatusMessage("Initializing secure lead verification…");
     };
 
     updateLeadIdStatus();
@@ -168,24 +233,23 @@ export default function Home() {
       return;
     }
 
-    const nextFieldErrors = requiredFields.reduce<Partial<Record<FormFieldName, string>>>(
-      (errors, field) => {
-        if (!formData[field.name].trim()) {
-          errors[field.name] = `${field.label} is required.`;
-        }
-        return errors;
-      },
-      {},
-    );
+    const nextFieldErrors = requiredFields.reduce<
+      Partial<Record<FormFieldName, string>>
+    >((errors, field) => {
+      if (!formData[field.name].trim()) {
+        errors[field.name] = `${field.label} is required.`;
+      }
+      return errors;
+    }, {});
 
     if (Object.keys(nextFieldErrors).length > 0) {
       setFieldErrors(nextFieldErrors);
       setSubmissionAlert({
         open: true,
-        title: 'Complete Required Fields',
+        title: "Complete Required Fields",
         message:
-          'Please fill in First Name, Last Name, Phone Number, and Zip Code before submitting the form.',
-        variant: 'error',
+          "Please fill in First Name, Last Name, Phone Number, and Zip Code before submitting the form.",
+        variant: "error",
       });
       return;
     }
@@ -193,7 +257,7 @@ export default function Home() {
     setFieldErrors({});
 
     if (!consentChecked) {
-      setConsentError('Consent is required before submitting this form.');
+      setConsentError("Consent is required before submitting this form.");
       return;
     }
 
@@ -203,65 +267,67 @@ export default function Home() {
     if (!leadiDToken) {
       setSubmissionAlert({
         open: true,
-        title: 'Lead ID Missing',
-        message: 'The LeadiD token was not generated. Please refresh the page and try again.',
-        variant: 'error',
+        title: "Lead ID Missing",
+        message:
+          "The LeadiD token was not generated. Please refresh the page and try again.",
+        variant: "error",
       });
       setIsSubmitting(false);
       return;
     }
 
-    leadIdLog('submit using token', { token: leadiDToken });
+    leadIdLog("submit using token", { token: leadiDToken });
     markLeadIdSubmission(leadiDToken);
 
     const payload = {
-      formType: 'medicare_contact',
+      formType: "alpha_legal_intake",
       fullName: `${formData.firstName} ${formData.lastName}`.trim(),
       email: formData.email,
       phone: formData.phone,
       zipCode: formData.zipCode,
-      serviceInterest: 'Medicare Assistance',
-      message: '',
+      serviceInterest: "Motor Vehicle Accident Leads",
+      message: "",
       consent_checked: true,
       consent_timestamp: new Date().toISOString(),
       consent_text_version: consentTextVersion,
       leadid_token: leadiDToken,
       page_url: window.location.href,
-      page_source: 'medicare landing form',
+      page_source: "alpha legal intake landing form",
       leadid_debug: buildLeadIdSubmissionSnapshot(),
     };
 
     try {
-      const response = await fetch('/api/forms/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/forms/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to submit');
+        throw new Error("Failed to submit");
       }
 
       setSubmissionAlert({
         open: true,
-        title: 'Request Submitted',
-        message: 'Thank you. A licensed insurance agent will contact you soon.',
-        variant: 'success',
+        title: "Request Submitted",
+        message: "Thank you. Alpha Legal Intake will contact you soon.",
+        variant: "success",
       });
 
       setFormData(initialFormData);
       setConsentChecked(false);
-      setConsentError('');
+      setConsentError("");
       const canonicalInput = getCanonicalLeadIdInput();
       if (canonicalInput) {
-        canonicalInput.dispatchEvent(new Event('change', { bubbles: true }));
+        canonicalInput.dispatchEvent(new Event("change", { bubbles: true }));
       }
     } catch {
       setSubmissionAlert({
         open: true,
-        title: 'Submission Failed',
-        message: 'We could not submit your request right now. Please try again shortly.',
-        variant: 'error',
+        title: "Submission Failed",
+        message:
+          "We could not submit your request right now. Please try again shortly.",
+        variant: "error",
       });
     } finally {
       setIsSubmitting(false);
@@ -269,7 +335,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 pt-16 text-slate-900">
+    <div className="alpha-site min-h-screen pt-20">
       <PremiumSubmissionAlert
         open={submissionAlert.open}
         title={submissionAlert.title}
@@ -278,41 +344,55 @@ export default function Home() {
         onClose={() => setSubmissionAlert((prev) => ({ ...prev, open: false }))}
       />
 
-      <nav className="fixed inset-x-0 top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex min-h-16 max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-2 text-slate-800" aria-label="Chatters Health Solutions home">
-            <Image
-              src="/chatters-health-logo-clean.png"
-              alt="Chatters Health Solutions logo"
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain"
-              priority
-            />
-            <span className="text-lg font-semibold">Chatters Health Solutions</span>
+      <nav className="fixed inset-x-0 top-4 z-50 px-4">
+        <div className="alpha-floating-header mx-auto flex min-h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <Link
+            href="/"
+            className="flex items-center gap-3 text-slate-900"
+            aria-label="Alpha Legal Intake home"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#062032] text-[#11c5ba]">
+              <Scale className="h-5 w-5" />
+            </span>
+            <span className="text-lg font-bold">Alpha Legal Intake</span>
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            <a href="#services" className="text-sm text-slate-600 transition hover:text-slate-900">
+            <a
+              href="#services"
+              className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
+            >
               Services
             </a>
-            <a href="#about" className="text-sm text-slate-600 transition hover:text-slate-900">
-              About
+            <a
+              href="#why-alpha"
+              className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
+            >
+              Why Alpha
             </a>
-            <a href="#contact" className="text-sm text-slate-600 transition hover:text-slate-900">
-              Contact
+            <a
+              href="#process"
+              className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
+            >
+              Process
+            </a>
+            <a
+              href="#faq"
+              className="text-sm font-medium text-slate-600 transition hover:text-slate-950"
+            >
+              FAQ
             </a>
             <a
               href="#contact"
-              className="rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-blue-700"
+              className="alpha-primary-button px-5 py-2 text-sm font-bold"
             >
-              Get Help
+              Request MVA leads
             </a>
           </div>
 
           <button
             type="button"
-            className="rounded-md border border-slate-300 px-3 py-2 text-sm md:hidden"
+            className="rounded-md border border-stone-300 px-3 py-2 text-sm md:hidden"
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-label="Toggle navigation"
           >
@@ -321,81 +401,94 @@ export default function Home() {
         </div>
 
         {mobileMenuOpen ? (
-          <div className="border-t border-slate-200 bg-white px-4 py-3 md:hidden">
+          <div className="mx-auto mt-2 max-w-7xl rounded-3xl border border-sky-100 bg-white/95 px-4 py-3 shadow-lg md:hidden">
             <div className="flex flex-col gap-3">
-              <a href="#services" onClick={() => setMobileMenuOpen(false)} className="text-sm text-slate-700">
-                Services
-              </a>
-              <a href="#about" onClick={() => setMobileMenuOpen(false)} className="text-sm text-slate-700">
-                About
-              </a>
-              <a href="#contact" onClick={() => setMobileMenuOpen(false)} className="text-sm text-slate-700">
-                Contact
-              </a>
-              <a
-                href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="rounded-md bg-blue-600 px-4 py-2 text-center text-sm font-semibold text-white"
-              >
-                Get Help
-              </a>
+              {["services", "why-alpha", "process", "faq", "contact"].map(
+                (item) => (
+                  <a
+                    key={item}
+                    href={`#${item}`}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="text-sm capitalize text-slate-700"
+                  >
+                    {item.replace("-", " ")}
+                  </a>
+                ),
+              )}
             </div>
           </div>
         ) : null}
       </nav>
 
-      <section className="border-b border-slate-200 bg-white py-16 md:py-20">
-        <div className="mx-auto grid max-w-6xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
-          <div className="space-y-6">
-            <p className="text-sm font-medium uppercase tracking-wide text-blue-700">
-              Non-government Medicare assistance
+      <section className="alpha-soft-gradient py-20 md:py-28">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8">
+          <div className="space-y-7">
+            <p className="alpha-eyebrow inline-flex rounded-full border border-teal-200 bg-white/70 px-4 py-2">
+              Alpha Legal Intake
             </p>
-            <h1 className="text-4xl font-bold leading-tight text-slate-900 md:text-5xl">
-              Shop Medicare options with confidence
+            <h1 className="max-w-4xl text-4xl font-black leading-tight text-[#062032] md:text-6xl">
+              Qualified Motor Vehicle Accident Leads for Law Firms
             </h1>
-            <p className="text-lg text-slate-600">
-              Get no-obligation help reviewing Medicare Advantage, Medicare Supplement, and Prescription Drug Plan
-              options. Speak with a licensed insurance agent today.
+            <p className="max-w-2xl text-lg leading-8 text-slate-600">
+              Grow your personal injury practice with screened MVA inquiries,
+              consent-based intake, and fast routing to your legal team.
             </p>
-            <a
-              href="#contact"
-              className="inline-flex rounded-md bg-blue-600 px-6 py-3 font-semibold text-white transition hover:bg-blue-700"
-            >
-              Talk to a Licensed Agent
-            </a>
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <a
+                href="#contact"
+                className="alpha-primary-button inline-flex items-center justify-center gap-2 px-7 py-3 font-bold"
+              >
+                Request MVA leads <ArrowRight className="h-4 w-4" />
+              </a>
+              <a
+                href="tel:+12029848556"
+                className="alpha-secondary-button inline-flex items-center justify-center px-7 py-3 font-semibold"
+              >
+                Call +1 (202) 984-8556
+              </a>
+            </div>
           </div>
-
-          <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-            <img
-              src="https://images.unsplash.com/photo-1584515933487-779824d29309?w=1200&h=800&fit=crop"
-              alt="Care provider helping a senior review medication"
-              className="h-full w-full object-cover"
-            />
+          <div className="alpha-card p-6">
+            <div className="rounded-[1.5rem] bg-white p-6 text-slate-950">
+              <p className="alpha-eyebrow">Intake snapshot</p>
+              <h2 className="mt-3 text-2xl font-black">
+                Personal injury demand, routed with clarity.
+              </h2>
+              <div className="mt-6 space-y-4">
+                {[
+                  "Accident-focused prospects",
+                  "Live transfer-ready workflows",
+                  "Consent and LeadiD verification retained",
+                ].map((item) => (
+                  <p
+                    key={item}
+                    className="flex items-center gap-3 rounded-xl bg-stone-100 p-4 text-sm font-semibold"
+                  >
+                    <ShieldCheck className="h-5 w-5 text-teal-600" />
+                    {item}
+                  </p>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="services" className="py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-3xl font-bold text-slate-900 md:text-4xl">Medicare Services</h2>
-          <p className="mx-auto mt-3 max-w-2xl text-center text-slate-600">
-            Simple support to help you understand and compare your Medicare options.
-          </p>
-
-          <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {[
-              'Medicare Advantage Plan Guidance',
-              'Medicare Supplement Plan Assistance',
-              'Prescription Drug Plan Support',
-              'Enrollment Assistance',
-              'Plan Comparison Help',
-              'Licensed Agent Consultation',
-            ].map((service) => (
-              <div key={service} className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-                <CheckCircle2 className="h-5 w-5 text-blue-600" />
-                <h3 className="mt-4 font-semibold text-slate-900">{service}</h3>
-                <p className="mt-2 text-sm text-slate-600">
-                  Personalized, easy-to-understand help based on your needs and ZIP code.
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="max-w-2xl">
+            <p className="alpha-eyebrow">Services</p>
+            <h2 className="mt-3 text-3xl font-black md:text-4xl">
+              Legal intake channels built for injury firms.
+            </h2>
+          </div>
+          <div className="mt-10 grid gap-6 md:grid-cols-3">
+            {services.map((service) => (
+              <div key={service.title} className="alpha-rounded-card p-7">
+                <CheckCircle2 className="h-7 w-7 text-teal-600" />
+                <h3 className="mt-5 text-xl font-black">{service.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">
+                  {service.description}
                 </p>
               </div>
             ))}
@@ -403,47 +496,87 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="about" className="border-y border-slate-200 bg-white py-16 md:py-20">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">About Chatters Health Solutions</h2>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-              <h3 className="font-semibold text-slate-900">Who we help</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Individuals turning 65, current Medicare beneficiaries, and caregivers seeking plan guidance.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-              <h3 className="font-semibold text-slate-900">How it works</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Submit your details, then connect with a licensed insurance agent to review options and next steps.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-slate-50 p-6">
-              <h3 className="font-semibold text-slate-900">Our goal</h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Make Medicare decisions easier through clear information and one-on-one support.
-              </p>
-            </div>
+      <section id="why-alpha" className="bg-white py-16 md:py-20">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+          <div>
+            <p className="alpha-eyebrow">Why Alpha</p>
+            <h2 className="mt-3 text-3xl font-black md:text-4xl">
+              A focused intake partner for serious personal injury growth.
+            </h2>
+          </div>
+          <div className="space-y-4 text-slate-600">
+            <p>
+              Alpha Legal Intake helps law firms reduce wasted follow-up time by
+              aligning lead generation, consent capture, and intake routing
+              around motor vehicle accident prospects.
+            </p>
+            <p>
+              Our process emphasizes speed, clear case context, and dependable
+              contact information so your team can prioritize the opportunities
+              that fit your practice.
+            </p>
           </div>
         </div>
       </section>
 
+      <section id="process" className="py-16 md:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <p className="alpha-eyebrow">Process</p>
+          <h2 className="mt-3 text-3xl font-black md:text-4xl">
+            Four steps from request to intake.
+          </h2>
+          <div className="mt-10 grid gap-5 md:grid-cols-4">
+            {processSteps.map((step, index) => (
+              <div key={step} className="alpha-rounded-card p-6">
+                <span className="text-4xl font-black text-teal-600">
+                  0{index + 1}
+                </span>
+                <p className="mt-5 text-sm font-semibold leading-6 text-slate-700">
+                  {step}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 md:py-20">
+        <div className="alpha-cta-panel mx-auto max-w-4xl px-4 py-12 text-center sm:px-6 lg:px-8">
+          <div className="flex justify-center gap-1 text-teal-300">
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star key={index} className="h-5 w-5 fill-current" />
+            ))}
+          </div>
+          <blockquote className="mt-6 text-2xl font-bold leading-10">
+            “Alpha Legal Intake gives our team a cleaner starting point:
+            accident-focused prospects, faster conversations, and the details we
+            need to evaluate fit.”
+          </blockquote>
+          <p className="mt-5 text-sm uppercase tracking-[0.2em] text-teal-200">
+            Client perspective
+          </p>
+        </div>
+      </section>
+
       <section id="contact" className="py-16 md:py-20">
-        <div className="mx-auto grid max-w-6xl gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
-            <h2 className="text-3xl font-bold text-slate-900 md:text-4xl">Contact a Licensed Agent</h2>
-            <p className="mt-3 text-slate-600">
-              Complete the form and we will connect you with a licensed insurance agent for Medicare help.
+            <p className="alpha-eyebrow">Start intake</p>
+            <h2 className="mt-3 text-3xl font-black md:text-4xl">
+              Request qualified MVA lead support.
+            </h2>
+            <p className="mt-4 text-slate-600">
+              Complete the form and Alpha Legal Intake will follow up about your
+              motor vehicle accident lead goals.
             </p>
             <ContactDetails
-              className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm shadow-slate-200/60"
+              className="alpha-card mt-8 p-6"
               iconClassName="h-4 w-4"
               textClassName="text-sm text-slate-700"
             />
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div className="alpha-card p-6">
             <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 id={LEADID_FORM_FIELD_ID}
@@ -454,8 +587,11 @@ export default function Home() {
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="firstName" className="mb-1 block text-sm font-medium text-slate-800">
-                    First Name  *
+                  <label
+                    htmlFor="firstName"
+                    className="mb-1 block text-sm font-medium text-slate-800"
+                  >
+                    First Name *
                   </label>
                   <input
                     id="firstName"
@@ -463,19 +599,21 @@ export default function Home() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     autoComplete="given-name"
-                    aria-invalid={fieldErrors.firstName ? 'true' : 'false'}
-                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
-                      fieldErrors.firstName
-                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
-                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
-                    }`}
+                    aria-invalid={fieldErrors.firstName ? "true" : "false"}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${fieldErrors.firstName ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200" : "border-slate-300 focus:border-teal-500 focus:ring-teal-100"}`}
                   />
-                  {fieldErrors.firstName ? <p className="mt-1 text-sm text-red-600">{fieldErrors.firstName}</p> : null}
+                  {fieldErrors.firstName ? (
+                    <p className="mt-1 text-sm text-red-600">
+                      {fieldErrors.firstName}
+                    </p>
+                  ) : null}
                 </div>
-
                 <div>
-                  <label htmlFor="lastName" className="mb-1 block text-sm font-medium text-slate-800">
-                    Last Name  *
+                  <label
+                    htmlFor="lastName"
+                    className="mb-1 block text-sm font-medium text-slate-800"
+                  >
+                    Last Name *
                   </label>
                   <input
                     id="lastName"
@@ -483,21 +621,23 @@ export default function Home() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     autoComplete="family-name"
-                    aria-invalid={fieldErrors.lastName ? 'true' : 'false'}
-                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
-                      fieldErrors.lastName
-                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
-                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
-                    }`}
+                    aria-invalid={fieldErrors.lastName ? "true" : "false"}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${fieldErrors.lastName ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200" : "border-slate-300 focus:border-teal-500 focus:ring-teal-100"}`}
                   />
-                  {fieldErrors.lastName ? <p className="mt-1 text-sm text-red-600">{fieldErrors.lastName}</p> : null}
+                  {fieldErrors.lastName ? (
+                    <p className="mt-1 text-sm text-red-600">
+                      {fieldErrors.lastName}
+                    </p>
+                  ) : null}
                 </div>
               </div>
-
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="phone" className="mb-1 block text-sm font-medium text-slate-800">
-                    Phone Number  *
+                  <label
+                    htmlFor="phone"
+                    className="mb-1 block text-sm font-medium text-slate-800"
+                  >
+                    Phone Number *
                   </label>
                   <input
                     id="phone"
@@ -506,19 +646,21 @@ export default function Home() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     autoComplete="tel"
-                    aria-invalid={fieldErrors.phone ? 'true' : 'false'}
-                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
-                      fieldErrors.phone
-                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
-                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
-                    }`}
+                    aria-invalid={fieldErrors.phone ? "true" : "false"}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${fieldErrors.phone ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200" : "border-slate-300 focus:border-teal-500 focus:ring-teal-100"}`}
                   />
-                  {fieldErrors.phone ? <p className="mt-1 text-sm text-red-600">{fieldErrors.phone}</p> : null}
+                  {fieldErrors.phone ? (
+                    <p className="mt-1 text-sm text-red-600">
+                      {fieldErrors.phone}
+                    </p>
+                  ) : null}
                 </div>
-
                 <div>
-                  <label htmlFor="zipCode" className="mb-1 block text-sm font-medium text-slate-800">
-                    Zip Code  *
+                  <label
+                    htmlFor="zipCode"
+                    className="mb-1 block text-sm font-medium text-slate-800"
+                  >
+                    Zip Code *
                   </label>
                   <input
                     id="zipCode"
@@ -527,19 +669,21 @@ export default function Home() {
                     autoComplete="postal-code"
                     value={formData.zipCode}
                     onChange={handleInputChange}
-                    aria-invalid={fieldErrors.zipCode ? 'true' : 'false'}
-                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${
-                      fieldErrors.zipCode
-                        ? 'border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200'
-                        : 'border-slate-300 focus:border-blue-500 focus:ring-blue-100'
-                    }`}
+                    aria-invalid={fieldErrors.zipCode ? "true" : "false"}
+                    className={`w-full rounded-md border px-3 py-2 transition focus:outline-none focus:ring-2 ${fieldErrors.zipCode ? "border-red-500 bg-red-50 focus:border-red-500 focus:ring-red-200" : "border-slate-300 focus:border-teal-500 focus:ring-teal-100"}`}
                   />
-                  {fieldErrors.zipCode ? <p className="mt-1 text-sm text-red-600">{fieldErrors.zipCode}</p> : null}
+                  {fieldErrors.zipCode ? (
+                    <p className="mt-1 text-sm text-red-600">
+                      {fieldErrors.zipCode}
+                    </p>
+                  ) : null}
                 </div>
               </div>
-
               <div>
-                <label htmlFor="email" className="mb-1 block text-sm font-medium text-slate-800">
+                <label
+                  htmlFor="email"
+                  className="mb-1 block text-sm font-medium text-slate-800"
+                >
                   Email (Optional)
                 </label>
                 <input
@@ -549,16 +693,16 @@ export default function Home() {
                   value={formData.email}
                   onChange={handleInputChange}
                   autoComplete="email"
-                  className="w-full rounded-md border border-slate-300 px-3 py-2"
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-100"
                 />
               </div>
-
               <div
-                className={`rounded-md border p-4 ${
-                  consentError ? 'border-red-400 bg-red-50' : 'border-slate-300 bg-slate-50'
-                }`}
+                className={`rounded-md border p-4 ${consentError ? "border-red-400 bg-red-50" : "border-stone-300 bg-stone-50"}`}
               >
-                <label htmlFor="leadid_tcpa_disclosure" className="flex items-start gap-3 text-sm text-slate-700">
+                <label
+                  htmlFor="leadid_tcpa_disclosure"
+                  className="flex items-start gap-3 text-sm text-slate-700"
+                >
                   <input
                     id="leadid_tcpa_disclosure"
                     type="checkbox"
@@ -566,24 +710,27 @@ export default function Home() {
                     onChange={(event) => {
                       setConsentChecked(event.target.checked);
                       if (event.target.checked) {
-                        setConsentError('');
+                        setConsentError("");
                       }
                     }}
                     className="mt-1 h-4 w-4"
                   />
                   <span>{fullConsentText}</span>
                 </label>
-                {consentError ? <p className="mt-2 text-sm text-red-600">{consentError}</p> : null}
+                {consentError ? (
+                  <p className="mt-2 text-sm text-red-600">{consentError}</p>
+                ) : null}
               </div>
-
               <button
                 type="submit"
                 disabled={!leadIdReady || isSubmitting}
-                className="w-full rounded-md bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="alpha-primary-button w-full px-4 py-3 font-bold disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isSubmitting ? 'Submitting…' : 'Get Medicare Help'}
+                {isSubmitting ? "Submitting…" : "Request MVA leads"}
               </button>
-              <p className={`text-sm ${leadIdReady ? 'text-emerald-700' : 'text-amber-700'}`}>
+              <p
+                className={`text-sm ${leadIdReady ? "text-emerald-700" : "text-teal-700"}`}
+              >
                 {leadIdStatusMessage}
               </p>
             </form>
@@ -591,33 +738,87 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="mt-6 flex items-center justify-center">
-        <Link
-          href="/privacy-policy"
-          className="mb-5 rounded-full bg-blue-600 px-8 py-2 text-sm font-medium text-white shadow-md transition-all duration-300 hover:scale-105 hover:bg-blue-700 hover:shadow-lg sm:text-base"
-        >
-          Privacy Policy
-        </Link>
-      </div>
-
-
-      <footer className="border-t border-slate-200 bg-white py-10">
-        <div className="mx-auto max-w-6xl px-4 text-sm text-slate-600 sm:px-6 lg:px-8">
-          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-            <p>&copy; 2026 Chatters Health Solutions. All rights reserved.</p>
-            <div className="flex items-center gap-3 text-sm font-medium text-slate-500" />
+      <section id="faq" className="bg-white py-16 md:py-20">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <p className="alpha-eyebrow">FAQ</p>
+          <h2 className="mt-3 text-3xl font-black md:text-4xl">
+            Common questions.
+          </h2>
+          <div className="mt-8 space-y-4">
+            {faqs.map((faq) => (
+              <div
+                key={faq.question}
+                className="rounded-2xl border border-stone-200 p-6"
+              >
+                <h3 className="font-black">{faq.question}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  {faq.answer}
+                </p>
+              </div>
+            ))}
           </div>
+        </div>
+      </section>
 
-          <ContactDetails
-            className="mt-6 rounded-xl border border-slate-200 bg-slate-50 p-5"
-            iconClassName="h-5 w-5"
-            textClassName="text-base text-slate-700"
-          />
+      <section className="py-16 md:py-20">
+        <div className="alpha-cta-panel mx-auto flex max-w-7xl flex-col items-start justify-between gap-6 px-6 py-10 sm:px-8 md:flex-row md:items-center lg:px-10">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[0.22em]">
+              Final CTA
+            </p>
+            <h2 className="mt-3 text-3xl font-black md:text-4xl">
+              Ready to discuss your intake goals?
+            </h2>
+          </div>
+          <a
+            href="#contact"
+            className="rounded-full bg-white px-7 py-3 font-bold text-[#062032] transition hover:bg-teal-50"
+          >
+            Start intake
+          </a>
+        </div>
+      </section>
 
-          <p className="mt-4 text-xs leading-relaxed text-slate-500">
-            This is a privately owned, non-government website. We are not affiliated with or endorsed by Medicare or any
-            government agency. Availability of plans varies by ZIP code and carrier participation.
-          </p>
+      <footer className="mt-16 bg-[#062032] py-12 text-white">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-3 lg:px-8">
+          <div>
+            <p className="text-lg font-black">Alpha Legal Intake</p>
+            <p className="mt-3 text-sm leading-6 text-slate-400">
+              Qualified motor vehicle accident lead generation and personal
+              injury intake support.
+            </p>
+          </div>
+          <div>
+            <p className="font-bold">Explore</p>
+            <div className="mt-4 flex flex-col gap-2 text-sm text-slate-400">
+              <a href="#services" className="hover:text-white">
+                Services
+              </a>
+              <a href="#why-alpha" className="hover:text-white">
+                Why Alpha
+              </a>
+              <a href="#process" className="hover:text-white">
+                Process
+              </a>
+              <Link href="/privacy-policy" className="hover:text-white">
+                Privacy Policy
+              </Link>
+              <Link href="/terms-of-service" className="hover:text-white">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
+          <div>
+            <p className="font-bold">Reach Us</p>
+            <ContactDetails
+              className="mt-4"
+              iconClassName="h-4 w-4"
+              textClassName="text-sm text-slate-400"
+            />
+          </div>
+        </div>
+        <div className="mx-auto mt-10 max-w-7xl px-4 text-sm text-slate-500 sm:px-6 lg:px-8">
+          &copy; 2026 Alpha Legal Intake. All rights reserved.
         </div>
       </footer>
     </div>

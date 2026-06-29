@@ -2,6 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
+const FORM_TYPE_LABELS: Record<string, string> = {
+  alpha_legal_intake: 'Alpha Legal Intake',
+  legal_intake_contact: 'Alpha Legal Intake (Legacy)',
+  medicare_contact: 'Medicare Contact (Legacy)',
+};
+
+function formatFormType(type: string) {
+  return FORM_TYPE_LABELS[type] || type;
+}
+
 type Submission = {
   id: string;
   createdAt: string;
@@ -95,7 +105,7 @@ export default function AdminDashboardClient() {
     const header = ['Date', 'Form Type', 'Name', 'Email', 'Company', 'Service', 'Consent', 'Status', 'Playback LeadiD', 'Stored LeadiD', 'Verification LeadiD'];
     const rows = items.map((s) => [
       s.createdAt,
-      s.formType,
+      formatFormType(s.formType),
       s.fullName,
       s.email,
       s.company ?? '',
@@ -152,7 +162,7 @@ export default function AdminDashboardClient() {
 
       <div className="mb-4 grid gap-2 md:grid-cols-7">
         <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search name/email/company" className="rounded border border-slate-700 bg-slate-900 p-2" />
-        <select value={formType} onChange={(e) => setFormType(e.target.value)} className="rounded border border-slate-700 bg-slate-900 p-2">{formOptions.map((o) => <option key={o} value={o}>{o}</option>)}</select>
+        <select value={formType} onChange={(e) => setFormType(e.target.value)} className="rounded border border-slate-700 bg-slate-900 p-2">{formOptions.map((o) => <option key={o} value={o}>{formatFormType(o)}</option>)}</select>
         <select value={status} onChange={(e) => setStatus(e.target.value)} className="rounded border border-slate-700 bg-slate-900 p-2"><option value="all">all</option><option value="new">new</option><option value="seen">seen</option><option value="archived">archived</option></select>
         <select value={consentChecked} onChange={(e) => setConsentChecked(e.target.value)} className="rounded border border-slate-700 bg-slate-900 p-2"><option value="all">consent: all</option><option value="true">true</option><option value="false">false</option></select>
         <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} className="rounded border border-slate-700 bg-slate-900 p-2" />
@@ -169,7 +179,7 @@ export default function AdminDashboardClient() {
             {items.map((s) => (
               <tr key={s.id} className="cursor-pointer border-t border-slate-800 hover:bg-slate-900/70" onClick={() => setSelected(s)}>
                 <td className="p-2">{new Date(s.createdAt).toLocaleString()}</td>
-                <td className="p-2">{s.formType}</td><td className="p-2">{s.fullName}</td><td className="p-2">{s.email}</td><td className="p-2">{s.serviceInterest || '-'}</td><td className="max-w-56 p-2 font-mono text-xs text-slate-300">{formatToken(getPlaybackToken(s))}</td><td className="p-2">{s.consent_checked ? 'Yes' : 'No'}</td><td className="p-2">{s.status}</td>
+                <td className="p-2">{formatFormType(s.formType)}</td><td className="p-2">{s.fullName}</td><td className="p-2">{s.email}</td><td className="p-2">{s.serviceInterest || '-'}</td><td className="max-w-56 p-2 font-mono text-xs text-slate-300">{formatToken(getPlaybackToken(s))}</td><td className="p-2">{s.consent_checked ? 'Yes' : 'No'}</td><td className="p-2">{s.status}</td>
               </tr>
             ))}
           </tbody>

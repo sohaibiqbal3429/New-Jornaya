@@ -1,5 +1,5 @@
-@import 'tailwindcss';
-@import 'tw-animate-css';
+@import "tailwindcss";
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -75,8 +75,8 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: "Geist", "Geist Fallback";
+  --font-mono: "Geist Mono", "Geist Mono Fallback";
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -128,76 +128,217 @@
 html.theme-transition *,
 html.theme-transition *::before,
 html.theme-transition *::after {
-  transition: background-color 220ms ease, color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+  transition:
+    background-color 220ms ease,
+    color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
 }
 
-/* Light theme overrides for current marketing pages */
-html.theme-light body {
+/* Alpha Legal Intake redesign tokens and reusable UI patterns */
+:root {
+  --alpha-navy: #062032;
+  --alpha-navy-strong: #03131f;
+  --alpha-teal: #11c5ba;
+  --alpha-aqua: #7ddfd8;
+  --alpha-blue-soft: #e9f7fb;
+  --alpha-green-soft: #ecfbf6;
+  --alpha-border: rgba(8, 47, 73, 0.12);
+  --alpha-shadow: 0 24px 70px rgba(6, 32, 50, 0.1);
+}
+
+html.theme-light:has(.alpha-site),
+html.theme-dark:has(.alpha-site) {
+  color-scheme: light;
+}
+
+html.theme-light:has(.alpha-site) body,
+html.theme-dark:has(.alpha-site) body {
+  background: #f7fbfc;
+  color: var(--alpha-navy);
+}
+
+@layer components {
+  .alpha-site {
+    color: var(--alpha-navy);
+    background:
+      radial-gradient(
+        circle at top left,
+        rgba(125, 223, 216, 0.32),
+        transparent 34rem
+      ),
+      radial-gradient(
+        circle at 85% 8rem,
+        rgba(14, 165, 233, 0.18),
+        transparent 32rem
+      ),
+      linear-gradient(
+        180deg,
+        var(--alpha-blue-soft) 0%,
+        #ffffff 45%,
+        var(--alpha-green-soft) 100%
+      );
+  }
+
+  .alpha-soft-gradient {
+    background:
+      radial-gradient(
+        circle at 12% 18%,
+        rgba(17, 197, 186, 0.2),
+        transparent 28rem
+      ),
+      radial-gradient(
+        circle at 86% 10%,
+        rgba(59, 130, 246, 0.16),
+        transparent 30rem
+      ),
+      linear-gradient(135deg, #f2fbff 0%, #ffffff 46%, #effbf7 100%);
+  }
+
+  .alpha-floating-header {
+    border: 1px solid rgba(8, 47, 73, 0.1);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 18px 55px rgba(6, 32, 50, 0.12);
+    backdrop-filter: blur(18px);
+  }
+
+  .alpha-card {
+    border: 1px solid var(--alpha-border);
+    border-radius: 1.75rem;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: var(--alpha-shadow);
+  }
+
+  .alpha-rounded-card {
+    border: 1px solid var(--alpha-border);
+    border-radius: 2rem;
+    background: #ffffff;
+    box-shadow: 0 18px 45px rgba(6, 32, 50, 0.08);
+  }
+
+  .alpha-cta-panel {
+    border-radius: 2rem;
+    background:
+      radial-gradient(
+        circle at 18% 20%,
+        rgba(17, 197, 186, 0.22),
+        transparent 24rem
+      ),
+      linear-gradient(135deg, var(--alpha-navy-strong), var(--alpha-navy));
+    color: #ffffff;
+    box-shadow: 0 28px 80px rgba(6, 32, 50, 0.25);
+  }
+
+  .alpha-eyebrow {
+    color: #078f89;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .alpha-primary-button {
+    border-radius: 9999px;
+    background: var(--alpha-navy);
+    color: #ffffff;
+    box-shadow: 0 16px 35px rgba(6, 32, 50, 0.2);
+    transition:
+      transform 180ms ease,
+      background-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .alpha-primary-button:hover {
+    background: var(--alpha-navy-strong);
+    box-shadow: 0 20px 45px rgba(6, 32, 50, 0.28);
+    transform: translateY(-1px);
+  }
+
+  .alpha-secondary-button {
+    border: 1px solid rgba(17, 197, 186, 0.45);
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--alpha-navy);
+    transition:
+      border-color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  .alpha-secondary-button:hover {
+    border-color: var(--alpha-teal);
+    background: #ffffff;
+  }
+}
+
+/* Legacy non-Alpha theme overrides retained for older marketing components only. */
+html.theme-light:not(:has(.alpha-site)) body {
   background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
-html.theme-light .bg-slate-950,
-html.theme-light .bg-slate-950\/95,
-html.theme-light .bg-slate-950\/85,
-html.theme-light .bg-slate-900,
-html.theme-light .bg-slate-900\/95,
-html.theme-light .bg-slate-900\/80,
-html.theme-light .bg-slate-900\/70,
-html.theme-light .bg-slate-900\/60 {
+html.theme-light:not(:has(.alpha-site)) .bg-slate-950,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-950\/95,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-950\/85,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-900,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-900\/95,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-900\/80,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-900\/70,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-900\/60 {
   background-color: #ffffff !important;
 }
 
-html.theme-light .bg-slate-800,
-html.theme-light .bg-slate-800\/50,
-html.theme-light .bg-slate-800\/40,
-html.theme-light .bg-slate-800\/30 {
+html.theme-light:not(:has(.alpha-site)) .bg-slate-800,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-800\/50,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-800\/40,
+html.theme-light:not(:has(.alpha-site)) .bg-slate-800\/30 {
   background-color: #f8fafc !important;
 }
 
-html.theme-light .border-slate-800,
-html.theme-light .border-slate-700,
-html.theme-light .border-slate-600 {
+html.theme-light:not(:has(.alpha-site)) .border-slate-800,
+html.theme-light:not(:has(.alpha-site)) .border-slate-700,
+html.theme-light:not(:has(.alpha-site)) .border-slate-600 {
   border-color: #cbd5e1 !important;
 }
 
-html.theme-light .text-white {
+html.theme-light:not(:has(.alpha-site)) .text-white {
   color: #0f172a !important;
 }
 
-html.theme-light .bg-orange-500.text-white,
-html.theme-light .bg-orange-500 .text-white {
+html.theme-light:not(:has(.alpha-site)) .bg-orange-500.text-white,
+html.theme-light:not(:has(.alpha-site)) .bg-orange-500 .text-white {
   color: #ffffff !important;
 }
 
-html.theme-light .text-gray-500 {
+html.theme-light:not(:has(.alpha-site)) .text-gray-500 {
   color: #64748b !important;
 }
 
-html.theme-light .text-gray-400,
-html.theme-light .text-slate-400 {
+html.theme-light:not(:has(.alpha-site)) .text-gray-400,
+html.theme-light:not(:has(.alpha-site)) .text-slate-400 {
   color: #475569 !important;
 }
 
-html.theme-light .text-gray-300,
-html.theme-light .text-slate-300 {
+html.theme-light:not(:has(.alpha-site)) .text-gray-300,
+html.theme-light:not(:has(.alpha-site)) .text-slate-300 {
   color: #334155 !important;
 }
 
-html.theme-light .bg-gradient-to-r.from-slate-900.to-slate-800\/60 {
+html.theme-light:not(:has(.alpha-site))
+  .bg-gradient-to-r.from-slate-900.to-slate-800\/60 {
   background-image: linear-gradient(to right, #ffffff, #f1f5f9) !important;
 }
 
-html.theme-light .from-slate-900 {
+html.theme-light:not(:has(.alpha-site)) .from-slate-900 {
   --tw-gradient-from: #ffffff var(--tw-gradient-from-position) !important;
 }
 
-html.theme-light .to-slate-800\/60 {
+html.theme-light:not(:has(.alpha-site)) .to-slate-800\/60 {
   --tw-gradient-to: rgb(241 245 249 / 1) var(--tw-gradient-to-position) !important;
 }
 
-html.theme-light .shadow-black\/30,
-html.theme-light .shadow-black\/20 {
+html.theme-light:not(:has(.alpha-site)) .shadow-black\/30,
+html.theme-light:not(:has(.alpha-site)) .shadow-black\/20 {
   --tw-shadow-color: rgb(15 23 42 / 0.1) !important;
 }
 
@@ -205,52 +346,52 @@ html.theme-light .shadow-black\/20 {
   background-color: #ffffff;
 }
 
-html.theme-light .mobile-menu-toggle {
+html.theme-light:not(:has(.alpha-site)) .mobile-menu-toggle {
   color: #0f172a !important;
   border-color: #cbd5e1 !important;
   background-color: #f8fafc !important;
 }
 
-html.theme-light .mobile-menu-line {
+html.theme-light:not(:has(.alpha-site)) .mobile-menu-line {
   background-color: #0f172a !important;
 }
 
 /* Light theme: improve form compliance block readability */
-html.theme-light .tpmo-card,
-html.theme-light .consent-card {
+html.theme-light:not(:has(.alpha-site)) .tpmo-card,
+html.theme-light:not(:has(.alpha-site)) .consent-card {
   background-color: #e2e8f0 !important;
   border-color: #94a3b8 !important;
 }
 
-html.theme-light .tpmo-text,
-html.theme-light .consent-label {
+html.theme-light:not(:has(.alpha-site)) .tpmo-text,
+html.theme-light:not(:has(.alpha-site)) .consent-label {
   color: #1e293b !important;
 }
 
-html.theme-light .tpmo-link {
+html.theme-light:not(:has(.alpha-site)) .tpmo-link {
   color: #c2410c !important;
 }
 
-html.theme-light .tpmo-modal {
+html.theme-light:not(:has(.alpha-site)) .tpmo-modal {
   background-color: #f8fafc !important;
   border-color: #94a3b8 !important;
 }
 
-html.theme-light .tpmo-modal-title,
-html.theme-light .tpmo-modal-text,
-html.theme-light .tpmo-modal-close {
+html.theme-light:not(:has(.alpha-site)) .tpmo-modal-title,
+html.theme-light:not(:has(.alpha-site)) .tpmo-modal-text,
+html.theme-light:not(:has(.alpha-site)) .tpmo-modal-close {
   color: #0f172a !important;
 }
 
-html.theme-light .tpmo-modal-close {
+html.theme-light:not(:has(.alpha-site)) .tpmo-modal-close {
   border-color: #94a3b8 !important;
 }
 
-html.theme-light .tpmo-modal-close:hover {
+html.theme-light:not(:has(.alpha-site)) .tpmo-modal-close:hover {
   background-color: #e2e8f0 !important;
 }
 
-html.theme-light .consent-checkbox {
+html.theme-light:not(:has(.alpha-site)) .consent-checkbox {
   background-color: #ffffff !important;
   border-color: #64748b !important;
 }
